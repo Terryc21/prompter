@@ -12,11 +12,26 @@ Rewrite the user's prompt so it is clear, typo-free, and actionable. Display the
 
 When `/skill prompter` is run, ask the user how long prompt rewriting should stay active:
 
-- **This session only** -- Rewrite prompts for the rest of this conversation. No files are modified.
+- **Try it once** -- Rewrite just the next prompt, then stop. Good for seeing what prompter does before committing.
+- **Next N prompts** -- Ask how many prompts to rewrite (e.g., 5, 10), then count down. Show remaining count after each rewrite.
+- **This session** -- Rewrite prompts for the rest of this conversation. No files are modified.
 - **Add to CLAUDE.md** -- Add a Prompt Rewriting rule to the project's CLAUDE.md so it persists across all future sessions.
 - **Remove from CLAUDE.md** -- Remove the Prompt Rewriting rule from CLAUDE.md to stop persistent rewriting.
 
 Then follow the rules below for the chosen duration.
+
+### After expiration
+
+When "Try it once" or "Next N prompts" expires, show:
+
+> **Prompter:** Done. Like it? Run `/skill prompter` to keep it going -- choose "This session" or "Add to CLAUDE.md" to make it permanent.
+
+### Counting behavior (N prompts)
+
+When the user chooses "Next N prompts":
+1. Ask how many prompts to rewrite
+2. After each rewrite, show the remaining count (e.g., "**Prompter:** 4 rewrites remaining")
+3. When the count reaches 0, show the expiration message above.
 
 ### Adding to CLAUDE.md
 
