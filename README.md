@@ -38,15 +38,19 @@ The skill walks you through the choice on first invocation.
 
 ## Example rewrite
 
+A real-feeling case where Claude has just been discussing a specific Swift file in the conversation, and the user types a vague follow-up:
+
 **Original:**
 
-> fix dashboard thing maybe make it cleaner
+> can you check that file for the same pattern
 
 **Rewritten:**
 
-> Refactor the dashboard layout to improve visual hierarchy and reduce clutter. Preserve existing functionality and navigation behavior. Focus specifically on spacing, grouping, and discoverability of primary actions.
+> Can you check `Sources/AI_Backend/OCRResultSheet.swift` for the same pattern?
 
-A larger collection of example rewrites is available: [examples/Prompter-Examples.md](examples/Prompter-Examples.md). The collection covers seven categories: typos, ambiguous references, vague verbs, multi-question prompts, prompts where rewriting should be skipped, preserving intent under restraint, and the side-effect feedback loop you start to notice after a few weeks.
+prompter resolved "that file" using the prior message, where `OCRResultSheet.swift` had just been discussed. Without the rewrite, Claude might have asked "which file?" or guessed wrong. With the rewrite, the next turn goes straight to the work.
+
+A larger collection of example rewrites is in [examples/Prompter-Examples.md](examples/Prompter-Examples.md). It covers seven categories: typos, ambiguous references, vague verbs, multi-question prompts, prompts where rewriting should be skipped, preserving intent under restraint, and the side-effect feedback loop you notice after a few weeks of running prompter every day.
 
 ---
 
