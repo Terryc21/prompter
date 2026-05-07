@@ -204,10 +204,46 @@ The skill's biggest discipline is restraint. Examples where a less-careful rewri
 
 ---
 
-## 7. Surprising side effect: prompter as a feedback loop
+## 7. Specifying deliverable shape for analytical asks
 
-Over time, watching Prompter sharpen your prompts becomes a quiet practice in writing better ones. You start noticing the patterns it cleans up — vague verbs, dangling pronouns, stacked questions — and writing prompts that already have those qualities. Some users report that after a month of running Prompter, their typo rate drops without effort, because the act of seeing the typo in the rewrite makes the original more conscious. The skill is supposed to make Claude better at understanding you. It also makes you a slightly better prompt writer, almost as a side effect.
+Some prompts are short and grammatically clean but under-specified along the dimensions that matter most for a useful answer. "Audit X." "Make recommendations." "Fix the slow build." Without rewriting, Claude will pick a direction, usually a reasonable one, and produce something. But that something often misses the implicit deliverable shape the user had in mind, and the next turn is spent reorienting. Prompter's biggest payoff lives in this category: it surfaces the dimensions of the analysis, names the deliverable shape, and adds the obvious guardrails ("don't edit yet") that the user would have remembered to write if they hadn't been mid-thought.
+
+### Example 7.1 — "Recommend a cleanup"
+
+**Raw:**
+> CLAUDE.md has gotten large. make recommendations for cleaning it up.
+
+**Rewritten prompt:**
+> CLAUDE.md has grown large. Read the file end-to-end and recommend a cleanup, identifying duplicated content, sections that are stale, sections that should be split into separate files (and where), and anything that's better living in memory or `DEFERRED.md` instead. Produce a prioritized recommendation list with rough line-count savings, but do not edit CLAUDE.md yet.
+
+(Prompter pinned down four audit dimensions, duplication, staleness, splittability, offload candidates, specified the output shape as a prioritized list with savings estimates, and added a guardrail against premature edits. The raw prompt would have produced a wandering response; the rewrite produces a deliverable.)
+
+### Example 7.2 — "Fix the slow build"
+
+**Raw:**
+> the build is slow, fix it
+
+**Rewritten prompt:**
+> Profile the iOS Simulator build of the Stuffolio scheme, identify the top 3 bottlenecks (compile-time hot files, slow build phase scripts, or unnecessary work in `Run Script` phases), and propose fixes ranked by expected wall-clock savings. Don't apply changes yet.
+
+(A blunt verb, "fix," becomes a measurement plan with a deliverable shape. Prompter resists jumping to a fix because the diagnosis hasn't happened. Without this, Claude often starts editing files before establishing what's actually slow.)
+
+### Example 7.3 — "Audit this file"
+
+**Raw:**
+> audit ScoutSession.swift
+
+**Rewritten prompt:**
+> Audit `Sources/AI_Backend/ScoutSession.swift` for: (1) concurrency correctness (Sendable, @MainActor, actor isolation), (2) error-handling gaps (`try?` swallowing, missing user-facing surfacing), (3) dead code, and (4) alignment with the project's "Completed Migrations" rules in CLAUDE.md. Output as a prioritized list with line numbers; don't edit the file.
+
+("Audit" without dimensions becomes a vague file walkthrough. Prompter chooses dimensions based on the project's stated standards, visible in CLAUDE.md, and pins the output to a reviewable list with line numbers.)
 
 ---
 
-*Examples generated 2026-05-03 to demonstrate Prompter's behavior. Real Prompter sessions look the same but happen inline in your Claude Code conversation.*
+## 8. Surprising side effect: prompter as a feedback loop
+
+Over time, watching Prompter sharpen your prompts becomes a quiet practice in writing better ones. You start noticing the patterns it cleans up, vague verbs, dangling pronouns, stacked questions, and writing prompts that already have those qualities. Some users report that after a month of running Prompter, their typo rate drops without effort, because the act of seeing the typo in the rewrite makes the original more conscious. The skill is supposed to make Claude better at understanding you. It also makes you a slightly better prompt writer, almost as a side effect.
+
+---
+
+*Examples generated 2026-05-03 to demonstrate Prompter's behavior; Section 7 (deliverable shape) added 2026-05-07. Real Prompter sessions look the same but happen inline in your Claude Code conversation.*
