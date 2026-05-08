@@ -112,7 +112,7 @@ mkdir -p /path/to/project/.claude/skills && cp -r prompter /path/to/project/.cla
 
 Other skills built during development of Stuffolio:
 
-- [**code-smarter**](https://github.com/Terryc21/code-smarter): personalized coding tutorials generated from your own codebase
+- [**tutorial-creator**](https://github.com/Terryc21/tutorial-creator): personalized coding tutorials generated from your own codebase
 - [**bug-echo**](https://github.com/Terryc21/bug-echo): after fixing a bug, locate and rate similar patterns elsewhere in the codebase
 - [**workflow-audit**](https://github.com/Terryc21/workflow-audit): multi-layer behavioral audit of SwiftUI user workflows
 - [**radar-suite**](https://github.com/Terryc21/radar-suite): behavioral audit suite for iOS/macOS Swift projects
@@ -121,7 +121,7 @@ Other skills built during development of Stuffolio:
 
 ## History
 
-`prompter` was originally bundled with [code-smarter](https://github.com/Terryc21/code-smarter) (then named `code-smarter`). It was split into its own repo so the audience that wants prompt rewriting can find it without first finding a tutorial-generation tool. Commit history is preserved.
+`prompter` was originally bundled with [tutorial-creator](https://github.com/Terryc21/tutorial-creator) (then named `code-smarter`). It was split into its own repo so the audience that wants prompt rewriting can find it without first finding a tutorial-generation tool. Commit history is preserved.
 
 ---
 
