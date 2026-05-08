@@ -38,22 +38,22 @@ The skill walks you through the choice on first invocation.
 
 ## Example rewrite
 
-prompter's biggest payoff is on prompts that are short, grammatically fine, and **under-specified along the dimensions that matter most.** A blunt verb plus a target name is the classic shape: "Audit this." "Fix the slow build." "Make recommendations." Claude will run with it, but in a direction you didn't choose, and the next turn is spent reorienting.
+prompter's biggest payoff is on prompts that are short, grammatically fine, and **under-specified along the dimensions that matter most.** A blunt verb plus a familiar complaint is the classic shape: "Fix the flaky tests." "Refactor this." "Audit the auth code." Claude will run with it, but in a direction you didn't choose, and the next turn is spent reorienting.
 
 **Original:**
 
-> the build is slow, fix it
+> the tests are flaky, fix them
 
 **Rewritten:**
 
-> Profile the iOS Simulator build of the Stuffolio scheme, identify the top 3 bottlenecks (compile-time hot files, slow build phase scripts, or unnecessary work in `Run Script` phases), and propose fixes ranked by expected wall-clock savings. Don't apply changes yet.
+> Diagnose flakiness in the test suite before changing anything. Categorize each failing test as: (1) timing-dependent (sleeps, polling, real clocks), (2) order-dependent (shared state, leaking fixtures), (3) environment-dependent (network, filesystem, machine-specific), or (4) genuinely racy (concurrency bugs in the code under test). Produce a ranked table with the test name, category, and confidence. Don't apply fixes yet.
 
 What prompter did:
 
-- **Refused to skip the diagnosis.** "Fix it" became "profile, identify, propose." The original would have started editing files before anything was measured.
-- **Pinned the analysis dimensions.** Three specific bottleneck categories instead of "whatever Claude thinks is slow."
-- **Specified the deliverable shape.** A ranked list with wall-clock savings, not a wall of prose.
-- **Added the missing guardrail.** "Don't apply changes yet" — the obvious thing the user would have written if they hadn't been mid-thought.
+- **Refused to skip the diagnosis.** "Fix them" became "diagnose, categorize, rank." The original would have started editing tests before anyone knew *which kind* of flake was at play — and a fix for a timing flake makes an order-dependence flake worse.
+- **Pinned the analysis dimensions.** Four well-known flake categories that every test engineer recognizes, rather than "whatever Claude thinks is wrong."
+- **Specified the deliverable shape.** A ranked table with name, category, and confidence — reviewable in 30 seconds, not a wall of prose.
+- **Added the missing guardrail.** "Don't apply fixes yet" — the obvious thing the user would have written if they hadn't been mid-thought.
 
 prompter also handles the smaller, more common cases — typos, dangling references like "that file," stacked questions, prompts that should *not* be rewritten because they're already clear, and the cases where it correctly holds back to preserve the user's voice. Eight categories total, with worked examples for each, in [examples/Prompter-Examples.md](examples/Prompter-Examples.md).
 
