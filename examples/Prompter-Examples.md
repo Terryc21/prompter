@@ -1,25 +1,9 @@
 # Prompter — Example Rewrites
 
-A representative sample of what Prompter does to user input before Claude Code acts on it. Each example below shows a real-feeling raw prompt, then the rewrite Prompter would produce.
+A representative sample of what Prompter does to user input before Claude Code acts on it. Each example shows a real-feeling raw prompt, then the rewrite Prompter would produce.
 
 > [!NOTE]
 > This file is a **sample of Prompter's output**, illustrating the kinds of changes the skill makes. Real Prompter sessions show the rewrite inline with the prefix `**Rewritten prompt:**` and wait for your approval before executing.
-
----
-
-**Raw:**
-> can you scna documents folde in root for stale documeents
-
-**Rewritten:**
-> Can you scan the `docs/` folder at the root for stale documents?
-
----
-
-**Raw:**
-> wht is hapeneing in this fucntion
-
-**Rewritten:**
-> What is happening in this function?
 
 ---
 
@@ -37,7 +21,7 @@ A representative sample of what Prompter does to user input before Claude Code a
 **Rewritten:**
 > Can you check `src/auth/session.ts` for the same pattern?
 
-(Prompter resolved "that file" using the prior message in the conversation, where `session.ts` had just been discussed.)
+(Resolved "that file" using the prior message in the conversation, where `session.ts` had just been discussed.)
 
 ---
 
@@ -46,24 +30,6 @@ A representative sample of what Prompter does to user input before Claude Code a
 
 **Rewritten:**
 > Apply the same input-validation refactor to the `/api/users/:id` endpoint that we just applied to `/api/users`.
-
----
-
-**Raw:**
-> what should I do next
-
-**Rewritten:**
-> *(Already clear and actionable; no rewrite.)* What should I do next?
-
-(Prompter doesn't fabricate specificity when the user is genuinely asking an open question.)
-
----
-
-**Raw:**
-> look at the auth tests
-
-**Rewritten:**
-> Read `tests/auth/login.test.ts` and report what you find.
 
 ---
 
@@ -95,6 +61,46 @@ A representative sample of what Prompter does to user input before Claude Code a
 ---
 
 **Raw:**
+> the api is returning 500 fix it
+
+**Rewritten:**
+> The API is returning 500. Before changing anything, find which endpoint is failing (check recent logs in `logs/` or run the failing test if there is one), identify the exception type and originating line, and report what you find. Do not start fixing until we've agreed on the root cause.
+
+(The dangerous shape is "fix it" attached to a symptom. The rewrite refuses to start fixing until the diagnosis is in.)
+
+---
+
+**Raw:**
+> rename UserService to AccountService everywhere
+
+**Rewritten:**
+> Rename the class `UserService` to `AccountService` across the codebase. Before applying, list every file that contains `UserService` (imports, instantiations, type annotations, comments, test names, fixture data, configuration files, documentation), grouped by reference type. We'll review the list and decide which references to update before any edit happens.
+
+(A blunt "rename everywhere" sounds simple but blows up across imports, configs, docs, and string literals in tests. The rewrite turns it into a list-then-decide flow so nothing gets accidentally renamed.)
+
+---
+
+**Raw:**
+> make this match the design
+
+**Rewritten:**
+> Update this component's styling to match the design at `designs/checkout-v2.fig` (or whichever design source you'd like me to use — confirm if different). Be specific about what "match" means: matching layout (spacing, alignment, breakpoints), visual style (colors, typography, borders), interaction states (hover, focus, disabled, loading), or all three. Default to all three unless otherwise specified.
+
+(*"Match the design"* is the kind of prompt where four developers will produce four different things. The rewrite forces the dimensions of "match" to be explicit before any code is written.)
+
+---
+
+**Raw:**
+> add caching here
+
+**Rewritten:**
+> Add caching to this function. Before implementing, decide together: (1) cache key (the function's argument hash, a derived key, or something custom), (2) cache invalidation strategy (TTL, manual invalidation, write-through), (3) cache layer (in-memory, Redis, the existing cache abstraction in `src/cache/`), (4) cache scope (per-request, per-user, global). Defaults: argument hash key, 5-minute TTL, in-memory, global. Confirm or adjust before I write code.
+
+(Cache bugs are the second-hardest class of bug to debug. The rewrite catches every decision that *will* matter later, before any code is written.)
+
+---
+
+**Raw:**
 > commit the api changes also push them
 
 **Rewritten:**
@@ -103,28 +109,20 @@ A representative sample of what Prompter does to user input before Claude Code a
 ---
 
 **Raw:**
+> Run npm test
+
+**Rewritten:**
+> *(Already clear and actionable; no rewrite.)* Run `npm test`.
+
+(Prompter still surfaces a one-line "no rewrite needed" notice so the user knows the skill saw the prompt and made a deliberate decision, rather than silently skipping.)
+
+---
+
+**Raw:**
 > yes
 
 **Rewritten:**
 > *(Skipped — permission response. Prompter executes immediately.)*
-
----
-
-**Raw:**
-> Option 2
-
-**Rewritten:**
-> *(Skipped — selecting from options Claude already presented. Prompter executes immediately.)*
-
----
-
-**Raw:**
-> Run npm test
-
-**Rewritten:**
-> *(Already clear and actionable; no rewrite. Prompter says so explicitly.)* Run `npm test`.
-
-(Prompter still surfaces a one-line "no rewrite needed" notice so the user knows the skill saw the prompt and made a deliberate decision, rather than silently skipping.)
 
 ---
 
@@ -179,14 +177,6 @@ A representative sample of what Prompter does to user input before Claude Code a
 
 **Rewritten:**
 > Audit the authentication code for vulnerabilities, scoped to the OWASP Top 10 categories most relevant to auth: broken access control, cryptographic failures, identification/authentication failures, and security misconfiguration. For each finding, provide: file and line, OWASP category, exploit scenario in one sentence, and severity (critical/high/medium/low). Skip theoretical issues that require an attacker model not present in this codebase. Don't propose fixes yet — just the audit.
-
----
-
-**Raw:**
-> CLAUDE.md has gotten large. make recommendations for cleaning it up.
-
-**Rewritten:**
-> CLAUDE.md has grown large. Read the file end-to-end and recommend a cleanup, identifying duplicated content, sections that are stale, sections that should be split into separate files (and where), and anything that's better living in memory or a separate doc. Produce a prioritized recommendation list with rough line-count savings, but do not edit CLAUDE.md yet.
 
 ---
 
