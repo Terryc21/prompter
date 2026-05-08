@@ -38,19 +38,24 @@ The skill walks you through the choice on first invocation.
 
 ## Example rewrite
 
-A real-feeling case where Claude has just been discussing a specific Swift file in the conversation, and the user types a vague follow-up:
+prompter's biggest payoff is on prompts that are short, grammatically fine, and **under-specified along the dimensions that matter most.** A blunt verb plus a target name is the classic shape: "Audit this." "Fix the slow build." "Make recommendations." Claude will run with it, but in a direction you didn't choose, and the next turn is spent reorienting.
 
 **Original:**
 
-> can you check that file for the same pattern
+> the build is slow, fix it
 
 **Rewritten:**
 
-> Can you check `Sources/AI_Backend/OCRResultSheet.swift` for the same pattern?
+> Profile the iOS Simulator build of the Stuffolio scheme, identify the top 3 bottlenecks (compile-time hot files, slow build phase scripts, or unnecessary work in `Run Script` phases), and propose fixes ranked by expected wall-clock savings. Don't apply changes yet.
 
-prompter resolved "that file" using the prior message, where `OCRResultSheet.swift` had just been discussed. Without the rewrite, Claude might have asked "which file?" or guessed wrong. With the rewrite, the next turn goes straight to the work.
+What prompter did:
 
-A larger collection of example rewrites is in [examples/Prompter-Examples.md](examples/Prompter-Examples.md). It covers seven categories: typos, ambiguous references, vague verbs, multi-question prompts, prompts where rewriting should be skipped, preserving intent under restraint, and the side-effect feedback loop you notice after a few weeks of running prompter every day.
+- **Refused to skip the diagnosis.** "Fix it" became "profile, identify, propose." The original would have started editing files before anything was measured.
+- **Pinned the analysis dimensions.** Three specific bottleneck categories instead of "whatever Claude thinks is slow."
+- **Specified the deliverable shape.** A ranked list with wall-clock savings, not a wall of prose.
+- **Added the missing guardrail.** "Don't apply changes yet" — the obvious thing the user would have written if they hadn't been mid-thought.
+
+prompter also handles the smaller, more common cases — typos, dangling references like "that file," stacked questions, prompts that should *not* be rewritten because they're already clear, and the cases where it correctly holds back to preserve the user's voice. Eight categories total, with worked examples for each, in [examples/Prompter-Examples.md](examples/Prompter-Examples.md).
 
 ---
 
