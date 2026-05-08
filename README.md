@@ -12,8 +12,6 @@ If this skill saves you time, a [coffee](https://buymeacoffee.com/stuffolio) is 
 
 ## Why this exists
 
-Small prompt problems create surprisingly large downstream problems: ambiguity, vague references, overloaded requests, unclear goals, missing constraints. A typo or imprecise verb can send Claude in the wrong direction for a long time before you notice.
-
 `prompter` intercepts your prompts before execution, rewrites them for clarity, and asks for approval before continuing. Over time, this becomes a subtle feedback loop: you start internalizing what makes prompts effective simply by watching them improve.
 
 The skill is opinionated about what *not* to rewrite: option selections, permission responses ("yes", "proceed"), follow-up answers, and prompts that are already clear. It only rewrites when there is a real improvement to make.
