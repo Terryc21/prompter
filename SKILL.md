@@ -1,7 +1,9 @@
 ---
 name: prompter
 description: Rewrite user prompts for clarity, fix typos, and make them more actionable before execution. Display the rewrite for approval.
-author: Terry Nyberg
+version: 1.0.0
+author: Terry Nyberg, Coffee & Code LLC
+license: Apache-2.0
 ---
 
 # Prompter
