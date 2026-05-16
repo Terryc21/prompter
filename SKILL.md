@@ -1,7 +1,7 @@
 ---
 name: prompter
 description: Rewrite the user's prompt for clarity, typo correction, and actionability before execution. Use when the user says "rewrite my prompt," "fix the typos in this prompt," "make this prompt clearer," "make this more actionable," or when a prompt is short and the intent is ambiguous. Display the rewrite and wait for approval.
-version: 1.1.0
+version: 1.2.0
 author: Terry Nyberg, Coffee & Code LLC
 license: Apache-2.0
 ---
@@ -71,7 +71,7 @@ When the user chooses "Add to CLAUDE.md", insert this section if no Prompt Rewri
 ```markdown
 ## Prompt Rewriting
 
-Before acting on any user prompt, rewrite it for clarity, correct typos, and make it more actionable. Display the rewritten version and wait for approval before proceeding. See `/skill prompter` for full rules.
+Before acting on any user prompt, evaluate whether rewriting it for clarity, typo correction, or actionability would meaningfully improve it. **Only rewrite when there is a real improvement to make** — typos to fix, ambiguous references to resolve, or vague intent to specify. If the original prompt is already clear and actionable, proceed without rewriting and without showing a rewrite. When you do rewrite, display the rewritten version with the prefix "**Rewritten prompt:**" and wait for approval before proceeding. See `/skill prompter` for full rules.
 
 <!-- Source of truth for the skip list: prompter SKILL.md § Skip rewriting for. If updating one, update both. -->
 
@@ -93,18 +93,19 @@ When the user chooses "Remove from CLAUDE.md":
 
 ## Rules
 
-1. **Rewrite** the user's prompt: fix typos, clarify intent, make it specific and actionable for Claude Code
-2. **Display** the rewritten prompt with the prefix "**Rewritten prompt:**"
-3. **Wait** for the user to approve before proceeding
-4. If the user approves (yes, looks good, etc.), execute the rewritten prompt
-5. If the user corrects the rewrite, incorporate their feedback and show the updated version
-6. **Skip notice format.** When skipping a rewrite, emit a single-line notice with the prefix `**Prompter:**` followed by the reason. Use one of:
+1. **Evaluate first, then rewrite.** Before producing any rewrite, ask: would rewriting this prompt for clarity, typo correction, or actionability **meaningfully improve it?** Only rewrite when there is a real improvement to make — typos to fix, ambiguous references to resolve, vague intent to specify, or missing scope guardrails. If the original is already clear and actionable, proceed without rewriting (emit the canonical "no rewrite needed" notice from Rule 7). The default behavior is *evaluation*, not rewriting.
+2. **Rewrite** when evaluation says yes: fix typos, clarify intent, make it specific and actionable for Claude Code
+3. **Display** the rewritten prompt with the prefix "**Rewritten prompt:**"
+4. **Wait** for the user to approve before proceeding
+5. If the user approves (yes, looks good, etc.), execute the rewritten prompt
+6. If the user corrects the rewrite, incorporate their feedback and show the updated version
+7. **Skip notice format.** When skipping a rewrite, emit a single-line notice with the prefix `**Prompter:**` followed by the reason. Use one of:
    - `**Prompter:** skipped (permission response) — executing immediately.`
    - `**Prompter:** skipped (option selection) — executing immediately.`
    - `**Prompter:** skipped (follow-up answer) — executing immediately.`
    - `**Prompter:** no rewrite needed — prompt is already clear and actionable.`
 
-**Note for downstream parsers.** The `**Prompter:**` prefix is shared between skip notices (Rule 6) and the N-prompts countdown status line (`**Prompter:** N rewrites remaining`). To disambiguate, match the suffix:
+**Note for downstream parsers.** The `**Prompter:**` prefix is shared between skip notices (Rule 7) and the N-prompts countdown status line (`**Prompter:** N rewrites remaining`). To disambiguate, match the suffix:
 - `^\*\*Prompter:\*\* skipped \(` → skip notice (permission, option, or follow-up)
 - `^\*\*Prompter:\*\* no rewrite needed` → no-rewrite-needed notice
 - `^\*\*Prompter:\*\* \d+ rewrites remaining` → N-prompts countdown
@@ -120,6 +121,7 @@ This list is the canonical source of truth. The same list also appears inside th
 
 ## Rewriting guidelines
 
+- **Only rewrite when there is a real improvement to make.** Typos to fix, ambiguous references to resolve, vague intent to specify, missing scope guardrails. Evaluation comes first; rewriting comes only if evaluation says yes.
 - Fix spelling and grammar
 - Resolve ambiguous references ("that file" -> specific file name if known from context)
 - Add specificity where the intent is clear but the wording is vague
