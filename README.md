@@ -12,7 +12,7 @@ If this skill saves you time, a [coffee](https://buymeacoffee.com/stuffolio) is 
 
 ## Why this exists
 
-`prompter` intercepts your prompts before execution, rewrites them for clarity, and asks for approval before continuing. Over time, this becomes a subtle feedback loop: you start internalizing what makes prompts effective simply by watching them improve.
+`prompter` intercepts your prompts before execution, **evaluates whether rewriting would meaningfully improve them**, and — when it would — shows you the rewrite and asks for approval before continuing. Over time, this becomes a subtle feedback loop: you start internalizing what makes prompts effective simply by watching them improve.
 
 The skill is opinionated about what *not* to rewrite: option selections, permission responses ("yes", "proceed"), follow-up answers, and prompts that are already clear. It only rewrites when there is a real improvement to make.
 
@@ -26,7 +26,9 @@ The skill is opinionated about what *not* to rewrite: option selections, permiss
 
 Activation modes:
 
-- **Current session only:** the rewrite behavior applies until the session ends
+- **Try it once:** evaluate and (if warranted) rewrite the next prompt, then stop
+- **Next N prompts:** apply prompter to the next N prompts (you specify N), then stop
+- **Current session only:** the evaluate/rewrite behavior applies until the session ends
 - **Persist via CLAUDE.md:** add the rewrite rule to your project's CLAUDE.md so it applies across sessions
 - **Remove persistent rewriting:** strip the rule from CLAUDE.md when you no longer want it
 
@@ -91,6 +93,9 @@ It just rewrites the next prompt for clarity, shows you the rewrite, and waits f
 ---
 
 ## Install
+
+> [!NOTE]
+> Manual install only — prompter is not yet packaged as a Claude Code plugin (unlike sibling skills `bug-echo`, `radar-suite`, etc.). Plugin packaging is on the roadmap.
 
 ```bash
 git clone https://github.com/Terryc21/prompter.git

@@ -1,14 +1,14 @@
 ---
 name: prompter
-description: Rewrite the user's prompt for clarity, typo correction, and actionability before execution. Use when the user says "rewrite my prompt," "fix the typos in this prompt," "make this prompt clearer," "make this more actionable," or when a prompt is short and the intent is ambiguous. Display the rewrite and wait for approval.
-version: 1.2.0
+description: Evaluate whether rewriting the user's prompt for clarity, typo correction, or actionability would meaningfully improve it; rewrite only when it would. Use when the user says "rewrite my prompt," "fix the typos in this prompt," "make this prompt clearer," "make this more actionable," or when a prompt is short and the intent is ambiguous. Display the rewrite and wait for approval.
+version: 1.2.1
 author: Terry Nyberg, Coffee & Code LLC
 license: Apache-2.0
 ---
 
 # Prompter
 
-Rewrite the user's prompt so it is clear, typo-free, and actionable. Display the rewritten version and wait for approval before taking any action.
+Evaluate whether rewriting the user's prompt would meaningfully improve it for clarity, typo correction, or actionability. When it would, display the rewritten version and wait for approval before taking any action. When the original is already clear and actionable, proceed without rewriting.
 
 ## On invocation
 
@@ -93,6 +93,8 @@ When the user chooses "Remove from CLAUDE.md":
 
 ## Rules
 
+Rules below govern the evaluate/rewrite/display/skip behavior. Activation modes (Try once, Next N, This session, Add/Remove from CLAUDE.md) are in "On invocation" above; rewriting style is in "Rewriting guidelines" below.
+
 1. **Evaluate first, then rewrite.** Before producing any rewrite, ask: would rewriting this prompt for clarity, typo correction, or actionability **meaningfully improve it?** Only rewrite when there is a real improvement to make — typos to fix, ambiguous references to resolve, vague intent to specify, or missing scope guardrails. If the original is already clear and actionable, proceed without rewriting (emit the canonical "no rewrite needed" notice from Rule 7). The default behavior is *evaluation*, not rewriting.
 2. **Rewrite** when evaluation says yes: fix typos, clarify intent, make it specific and actionable for Claude Code
 3. **Display** the rewritten prompt with the prefix "**Rewritten prompt:**"
@@ -113,11 +115,11 @@ When the user chooses "Remove from CLAUDE.md":
 
 ## Skip rewriting for
 
-This list is the canonical source of truth. The same list also appears inside the CLAUDE.md template above so it ships intact when "Add to CLAUDE.md" runs — that's an accepted duplication, not a bug. The HTML comment in the template (`Source of truth for the skip list: prompter SKILL.md § Skip rewriting for`) reminds future editors to update both. If the skip rules change, edit both places; nothing currently enforces it mechanically.
+This list is the canonical source of truth. The same list also appears inside the CLAUDE.md template above so it ships intact when "Add to CLAUDE.md" runs — that's an accepted duplication, not a bug. The HTML comment in the template (`Source of truth for the skip list: prompter SKILL.md § Skip rewriting for`) reminds future editors to update both. Keep the *categories* identical between the two lists; wording variations (second-person vs neutral) are acceptable as long as no category is added, removed, or semantically narrowed in one place but not the other.
 
 - Permission responses (yes, no, proceed, etc.)
-- Selecting from options presented (e.g., "Option 2", "Proceed (Recommended)")
-- Follow-up answers to clarifying questions
+- Selecting from options you presented (e.g., "Option 2", "Proceed (Recommended)")
+- Follow-up answers to your clarifying questions
 
 ## Rewriting guidelines
 
@@ -128,3 +130,4 @@ This list is the canonical source of truth. The same list also appears inside th
 - Keep the user's intent -- don't add scope or change what they're asking for
 - Keep it concise -- one to three sentences is ideal
 - If the prompt is already clear and actionable, say so and proceed without rewriting
+- **Flag rewrites worth sharing back.** If a rewrite materially improves the prompt by (a) pinning an under-specified analytical ask into a deliverable shape, (b) resolving an ambiguous reference using non-obvious context, or (c) surfacing a guardrail the user clearly forgot ("don't edit yet," "don't push," "ask before X"), the user may want to consider it as a candidate example for prompter's own example collection. This is a flag, not a quality verdict; don't apply it to routine typo corrections or minor sharpening.
