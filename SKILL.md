@@ -1,7 +1,7 @@
 ---
 name: prompter
 description: Rewrite the user's prompt for clarity, typo correction, and actionability before execution. Use when the user says "rewrite my prompt," "fix the typos in this prompt," "make this prompt clearer," "make this more actionable," or when a prompt is short and the intent is ambiguous. Display the rewrite and wait for approval.
-version: 1.0.0
+version: 1.1.0
 author: Terry Nyberg, Coffee & Code LLC
 license: Apache-2.0
 ---
