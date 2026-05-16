@@ -5,6 +5,31 @@ A representative sample of what Prompter does to user input before Claude Code a
 > [!NOTE]
 > This file is a **sample of Prompter's output**, illustrating the kinds of changes the skill makes. Real Prompter sessions show the rewrite inline with the prefix `**Rewritten prompt:**` and wait for your approval before executing.
 
+## Contents
+
+Twenty examples, in file order. Pattern themes are noted in parentheses.
+
+1. "the api is returning 500 fix it" — *diagnose-before-fix*
+2. "make this match the design" — *specify dimensions*
+3. "can you check that file for the same pattern" — *resolve ambiguous reference*
+4. "add caching here" — *preempt design decisions*
+5. "rename UserService to AccountService everywhere" — *preempt blast radius*
+6. "yes" — *skip (permission response)*
+7. "the tests are flaky, fix them" — *diagnose-before-fix (see README)*
+8. "is the snapshot test still recording and if so…" — *decompose stacked questions*
+9. "find a security issue in the auth code" — *threat-model framing*
+10. "the build is slow, fix it" — *diagnose-before-fix*
+11. "why does this work" — *preserve user voice (no rewrite)*
+12. "deal with the failing migration test" — *resolve dangerous verb*
+13. "do the thing we just did but for the other endpoint" — *resolve from context*
+14. "audit user.service.ts" — *specify audit dimensions*
+15. "can you maybe possibly take a look…" — *preserve register, trim redundancy*
+16. "set up the linter" — *concretize vague verb*
+17. "fix the typo on line 47" — *resist scope creep*
+18. "commit the api changes also push them" — *minor sharpening*
+19. "chek if hte test for cateogry coutn…" — *typo repair*
+20. "Run npm test" — *no rewrite needed*
+
 ---
 
 **Raw:**
@@ -61,15 +86,14 @@ A representative sample of what Prompter does to user input before Claude Code a
 > yes
 
 **Rewritten:**
-> *(Skipped — permission response. Prompter executes immediately.)*
+> **Prompter:** skipped (permission response) — executing immediately.
 
 ---
 
 **Raw:**
 > the tests are flaky, fix them
 
-**Rewritten:**
-> Diagnose flakiness in the test suite before changing anything. Categorize each failing test as: (1) timing-dependent (sleeps, polling, real clocks), (2) order-dependent (shared state, leaking fixtures), (3) environment-dependent (network, filesystem, machine-specific), or (4) genuinely racy (concurrency bugs in the code under test). Produce a ranked table with the test name, category, and confidence. Don't apply fixes yet.
+See the [worked example in the README](../README.md#example-rewrite) — full rewrite plus commentary on the four flake categories.
 
 ---
 
@@ -82,6 +106,8 @@ A representative sample of what Prompter does to user input before Claude Code a
 > 2. If yes, does it need to flip back to `false` before committing?
 > 3. What is the overall state of the visual regression suite — passing, failing, or skipped?
 
+(Three semantically distinct questions were buried in a run-on sentence. Splitting them turns one ambiguous ask into three reviewable ones.)
+
 ---
 
 **Raw:**
@@ -90,6 +116,8 @@ A representative sample of what Prompter does to user input before Claude Code a
 **Rewritten:**
 > Audit the authentication code for vulnerabilities, scoped to the OWASP Top 10 categories most relevant to auth: broken access control, cryptographic failures, identification/authentication failures, and security misconfiguration. For each finding, provide: file and line, OWASP category, exploit scenario in one sentence, and severity (critical/high/medium/low). Skip theoretical issues that require an attacker model not present in this codebase. Don't propose fixes yet — just the audit.
 
+(Bug-hunt framing terminates at the first hit; scoped-audit framing terminates with a complete report. Picking four of OWASP's ten categories scopes the audit; the structured finding format makes it triageable in 60 seconds. See the README for the full version with per-bullet commentary.)
+
 ---
 
 **Raw:**
@@ -97,6 +125,8 @@ A representative sample of what Prompter does to user input before Claude Code a
 
 **Rewritten:**
 > Profile the build, identify the top 3 bottlenecks (slow-compiling files, expensive build-step scripts, or unnecessary work in pre/post hooks), and propose fixes ranked by expected wall-clock savings. Don't apply changes yet.
+
+(Same shape as "fix the flaky tests" — refuses to start fixing before profiling, and demands ranked findings.)
 
 ---
 
@@ -116,6 +146,8 @@ A representative sample of what Prompter does to user input before Claude Code a
 **Rewritten:**
 > Diagnose or fix the failing test `migrations/2024_add_user_role.test.ts` (currently throwing "column 'role' already exists").
 
+(Names the test file and quotes the error message from context. "Deal with" was the dangerous verb — it could mean fix, skip, or delete.)
+
 ---
 
 **Raw:**
@@ -124,6 +156,8 @@ A representative sample of what Prompter does to user input before Claude Code a
 **Rewritten:**
 > Apply the same input-validation refactor to the `/api/users/:id` endpoint that we just applied to `/api/users`.
 
+(Resolved both "the thing" and "the other endpoint" from prior conversation. If either reference were ambiguous, no rewrite — the skill would ask.)
+
 ---
 
 **Raw:**
@@ -131,6 +165,8 @@ A representative sample of what Prompter does to user input before Claude Code a
 
 **Rewritten:**
 > Audit `src/services/user.service.ts` for: (1) error-handling gaps (swallowed errors, missing user-facing surfacing), (2) async correctness (unhandled promise rejections, missing awaits), (3) dead code, and (4) violations of the project's coding standards documented in CONTRIBUTING.md. Output as a prioritized list with line numbers; don't edit the file.
+
+(Default audit dimensions plus deliverable shape. Resists the temptation to start editing — find first, decide second.)
 
 ---
 
@@ -150,6 +186,8 @@ A representative sample of what Prompter does to user input before Claude Code a
 **Rewritten:**
 > Install ESLint with the project's existing TypeScript config preset, add a `lint` script to `package.json`, and run it once to surface the current violation count.
 
+(Concrete steps replace the vague verb "set up." Ends with a visible state change — the violation count — so the user knows what to expect next.)
+
 ---
 
 **Raw:**
@@ -168,6 +206,8 @@ A representative sample of what Prompter does to user input before Claude Code a
 **Rewritten:**
 > Commit the changes in the `api/` directory, then push to origin.
 
+(Two-step instruction was already clear; the rewrite only sharpens the target.)
+
 ---
 
 **Raw:**
@@ -176,13 +216,15 @@ A representative sample of what Prompter does to user input before Claude Code a
 **Rewritten:**
 > Check if the test for category count matches the number of categories in the enum.
 
+(Pure spelling repair. The intent was crystal-clear; the rewrite makes it readable without changing scope.)
+
 ---
 
 **Raw:**
 > Run npm test
 
 **Rewritten:**
-> *(Already clear and actionable; no rewrite.)* Run `npm test`.
+> **Prompter:** no rewrite needed — prompt is already clear and actionable. Run `npm test`.
 
 (Prompter still surfaces a one-line "no rewrite needed" notice so the user knows the skill saw the prompt and made a deliberate decision, rather than silently skipping.)
 

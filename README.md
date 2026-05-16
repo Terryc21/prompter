@@ -71,7 +71,7 @@ What prompter did:
 - **Added the scope discipline.** "Skip theoretical issues that require an attacker model not present in this codebase" — the line that prevents Claude from listing a CSRF concern on a backend service that has no browser-facing surface.
 - **Added the same diagnose-before-fix guardrail.** "Don't propose fixes yet — just the audit." Findings before remediation.
 
-prompter also handles the smaller, more common cases — typos, dangling references like "that file," stacked questions, prompts that should *not* be rewritten because they're already clear, and the cases where it correctly holds back to preserve the user's voice. Eight categories total, with worked examples for each, in [examples/Prompter-Examples.md](examples/Prompter-Examples.md).
+prompter also handles the smaller, more common cases — typos, dangling references like "that file," stacked questions, prompts that should *not* be rewritten because they're already clear, and the cases where it correctly holds back to preserve the user's voice. Twenty worked examples covering typos, dangling references, stacked questions, hedging preservation, no-rewrite cases, and threat-model framing are in [examples/Prompter-Examples.md](examples/Prompter-Examples.md).
 
 ---
 
