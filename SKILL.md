@@ -51,11 +51,20 @@ If the user notices the count appears wrong after a compaction or `/clear`, trea
 
 The countdown does NOT persist across separate Claude Code sessions. "Next N prompts" is single-session by design. Use "Add to CLAUDE.md" for cross-session persistence.
 
+**Operational caveat.** Treating a markdown line as durable state is a real bet, not a guarantee. Summarizers preserve recent factual lines well in practice, but a sufficiently aggressive compaction or `/clear` can drop the status line entirely — at which point the countdown silently resets and the skill stops rewriting until re-invoked. For runs longer than ~10-15 exchanges, prefer "Add to CLAUDE.md" instead of "Next N prompts." If the count must survive a known-long conversation, periodically restate it in the conversation (e.g., ask "what's the current count?") so the summarizer has a fresh anchor to preserve.
+
 ### Adding to CLAUDE.md
 
 The template below is a starting point. Users frequently evolve their Prompt Rewriting rule after using prompter for a while — adding "evaluate whether rewriting would meaningfully improve it," tightening the skip list, adding project-specific conventions. This is normal and expected; the detection rules below are designed to preserve those edits rather than overwrite them.
 
 **Detecting an existing section.** A Prompt Rewriting section is considered to exist if the file contains a line matching `^## Prompt Rewriting\b`. The block boundary is from that line to the next `^## ` heading or end of file. If the existing block differs from the template below, do not overwrite — instead, show the user a diff and ask whether to (a) keep their version, (b) replace with the template, or (c) merge specific lines. Default to (a) and proceed without changes.
+
+Regex examples (verify intent if editing):
+- ✅ Matches: `## Prompt Rewriting`
+- ✅ Matches: `## Prompt Rewriting (project-specific)` — `\b` accepts following space + parens
+- ❌ Does not match: `### Prompt Rewriting` — wrong heading level
+- ❌ Does not match: `## prompt rewriting` — case-sensitive
+- ❌ Does not match: `## Some Prompt Rewriting Notes` — `^` anchors to start of line
 
 When the user chooses "Add to CLAUDE.md", insert this section if no Prompt Rewriting section exists, or follow the detection rule above if one does:
 
@@ -95,7 +104,15 @@ When the user chooses "Remove from CLAUDE.md":
    - `**Prompter:** skipped (follow-up answer) — executing immediately.`
    - `**Prompter:** no rewrite needed — prompt is already clear and actionable.`
 
+**Note for downstream parsers.** The `**Prompter:**` prefix is shared between skip notices (Rule 6) and the N-prompts countdown status line (`**Prompter:** N rewrites remaining`). To disambiguate, match the suffix:
+- `^\*\*Prompter:\*\* skipped \(` → skip notice (permission, option, or follow-up)
+- `^\*\*Prompter:\*\* no rewrite needed` → no-rewrite-needed notice
+- `^\*\*Prompter:\*\* \d+ rewrites remaining` → N-prompts countdown
+- `^\*\*Prompter:\*\* Done\.` → expiration message
+
 ## Skip rewriting for
+
+This list is the canonical source of truth. The same list also appears inside the CLAUDE.md template above so it ships intact when "Add to CLAUDE.md" runs — that's an accepted duplication, not a bug. The HTML comment in the template (`Source of truth for the skip list: prompter SKILL.md § Skip rewriting for`) reminds future editors to update both. If the skip rules change, edit both places; nothing currently enforces it mechanically.
 
 - Permission responses (yes, no, proceed, etc.)
 - Selecting from options presented (e.g., "Option 2", "Proceed (Recommended)")

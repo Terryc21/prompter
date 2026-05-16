@@ -15,7 +15,7 @@ Twenty examples, in file order. Pattern themes are noted in parentheses.
 4. "add caching here" — *preempt design decisions*
 5. "rename UserService to AccountService everywhere" — *preempt blast radius*
 6. "yes" — *skip (permission response)*
-7. "the tests are flaky, fix them" — *diagnose-before-fix (see README)*
+7. "the tests are flaky, fix them" — *diagnose-before-fix*
 8. "is the snapshot test still recording and if so…" — *decompose stacked questions*
 9. "find a security issue in the auth code" — *threat-model framing*
 10. "the build is slow, fix it" — *diagnose-before-fix*
@@ -93,7 +93,10 @@ Twenty examples, in file order. Pattern themes are noted in parentheses.
 **Raw:**
 > the tests are flaky, fix them
 
-See the [worked example in the README](../README.md#example-rewrite) — full rewrite plus commentary on the four flake categories.
+**Rewritten:**
+> Diagnose flakiness in the test suite before changing anything. Categorize each failing test as: (1) timing-dependent (sleeps, polling, real clocks), (2) order-dependent (shared state, leaking fixtures), (3) environment-dependent (network, filesystem, machine-specific), or (4) genuinely racy (concurrency bugs in the code under test). Produce a ranked table with the test name, category, and confidence. Don't apply fixes yet.
+
+(For the four-bullet commentary explaining what this rewrite did, see the [worked example in the README](../README.md#example-rewrites).)
 
 ---
 
