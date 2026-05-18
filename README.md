@@ -152,9 +152,9 @@ mkdir -p /path/to/project/.claude/skills && cp -r prompter /path/to/project/.cla
 
 - [**bug-echo**](https://github.com/Terryc21/bug-echo) — sibling-bug scan after a fix
 - [**bug-prospector**](https://github.com/Terryc21/bug-prospector) — forward-looking bug hunt before a release
-- [**workflow-audit**](https://github.com/Terryc21/workflow-audit) — 5-layer SwiftUI flow audit
+- [**workflow-audit**](https://github.com/Terryc21/workflow-audit) — 5-layer SwiftUI behavioral flow audit
 - [**unforget**](https://github.com/Terryc21/unforget) — one-file deferred-work ledger
-- [**radar-suite**](https://github.com/Terryc21/radar-suite) — 6-skill iOS audit family
+- [**radar-suite**](https://github.com/Terryc21/radar-suite) — 6-skill suite tracing user behavior paths through the app (iOS + macOS)
 - [**skill-reviewer**](https://github.com/Terryc21/skill-reviewer) — candid reviews of other Claude Code skills
 - [**tutorial-creator**](https://github.com/Terryc21/tutorial-creator) — annotated tutorials from your codebase
 
