@@ -1,12 +1,23 @@
 # prompter
 
+![Version](https://img.shields.io/github/v/tag/Terryc21/prompter?label=version) ![Last commit](https://img.shields.io/github/last-commit/Terryc21/prompter) ![Stars](https://img.shields.io/github/stars/Terryc21/prompter?style=flat) ![Issues](https://img.shields.io/github/issues/Terryc21/prompter) ![License](https://img.shields.io/github/license/Terryc21/prompter)
+
 **A Claude Code skill that rewrites your prompts for clarity before they run.**
 
-Built for [Stuffolio](https://stuffolio.app), an iOS/macOS inventory management app, and extracted into its own skill for general use.
+*~3 min read · scan the TL;DR if you only have 30 seconds*
 
-<a href="https://buymeacoffee.com/stuffolio"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" width="120"></a>
+## TL;DR
 
-If this skill saves you time, a [coffee](https://buymeacoffee.com/stuffolio) is appreciated. [Sponsoring](https://github.com/sponsors/Terryc21) supports further development.
+- **What:** Intercepts your prompts, evaluates whether rewriting would meaningfully improve them, and shows you the rewrite for approval before Claude acts.
+- **Why:** Most prompts are short, grammatically fine, and under-specified along the dimensions that matter most. Claude runs with them in a direction you didn't choose, and the next turn is spent reorienting.
+- **Install:** `git clone` into `~/.claude/skills/`; then `/skill prompter` in any session.
+- **Try first:** `/skill prompter`, choose "Try it once," then submit a one-liner like *"the tests are flaky, fix them"* — see what prompter would have made of it.
+- **Example output:** [20 worked examples covering typos, dangling references, threat-model framing, and no-rewrite cases](examples/Prompter-Examples.md).
+- **Maturity:** v1.2.1; manual install (plugin packaging on the roadmap); built and used daily while shipping [Stuffolio](https://stuffolio.app).
+
+## Newer to Claude Code?
+
+A **skill** is a markdown file Claude Code knows how to run. When you type `/skill prompter`, Claude follows the instructions in this skill, intercepts your next prompt, and asks whether you want to rewrite it before acting. You don't have to memorize anything — the skill tells Claude what to do, you approve or skip each rewrite.
 
 ---
 
@@ -79,6 +90,22 @@ prompter also handles the smaller, more common cases — typos, dangling referen
 
 ---
 
+## Scoping a run
+
+prompter doesn't take a file or feature argument — there's nothing to scan. It scopes by **how long the rewrite behavior stays active**. On first invocation it asks:
+
+| Mode | Behavior |
+|---|---|
+| **Try it once** | Evaluate the next prompt, rewrite if warranted, then stop. Good first run. |
+| **Next N prompts** | You pick N (5, 10, 50). Counter shown after each rewrite. |
+| **This session** | Rewrite for the rest of this Claude Code conversation. No files modified. |
+| **Add to CLAUDE.md** | Insert a Prompt Rewriting rule into your project's CLAUDE.md so it persists across sessions. |
+| **Remove from CLAUDE.md** | Strip the rule when you no longer want persistent rewriting. |
+
+**Fresh vs prior history.** prompter is stateless by design — every prompt is evaluated from scratch against the rules in SKILL.md. There's no per-user model that "learns your style," no prior-rewrite cache that biases the next call. Re-invocation in the same session detects an active mode and asks whether to restart the counter, switch modes, or update the CLAUDE.md rule (it never duplicates silently). If you want a different style, edit SKILL.md or override the rule in your project's CLAUDE.md.
+
+---
+
 ## What it doesn't do
 
 `prompter` is intentionally narrow:
@@ -115,26 +142,27 @@ mkdir -p /path/to/project/.claude/skills && cp -r prompter /path/to/project/.cla
 
 ---
 
-## Related Claude Code skills
-
-Other skills built during development of Stuffolio:
-
-- [**tutorial-creator**](https://github.com/Terryc21/tutorial-creator): personalized coding tutorials generated from your own codebase
-- [**bug-echo**](https://github.com/Terryc21/bug-echo): after fixing a bug, locate and rate similar patterns elsewhere in the codebase
-- [**workflow-audit**](https://github.com/Terryc21/workflow-audit): multi-layer behavioral audit of SwiftUI user workflows
-- [**radar-suite**](https://github.com/Terryc21/radar-suite): behavioral audit suite for iOS/macOS Swift projects
-
----
-
 ## History
 
 `prompter` was originally bundled with [tutorial-creator](https://github.com/Terryc21/tutorial-creator) (then named `code-smarter`). It was split into its own repo so the audience that wants prompt rewriting can find it without first finding a tutorial-generation tool. Commit history is preserved.
 
 ---
 
+## Sibling skills
+
+- [**bug-echo**](https://github.com/Terryc21/bug-echo) — sibling-bug scan after a fix
+- [**bug-prospector**](https://github.com/Terryc21/bug-prospector) — forward-looking bug hunt before a release
+- [**workflow-audit**](https://github.com/Terryc21/workflow-audit) — 5-layer SwiftUI flow audit
+- [**unforget**](https://github.com/Terryc21/unforget) — one-file deferred-work ledger
+- [**radar-suite**](https://github.com/Terryc21/radar-suite) — 6-skill iOS audit family
+- [**skill-reviewer**](https://github.com/Terryc21/skill-reviewer) — candid reviews of other Claude Code skills
+- [**tutorial-creator**](https://github.com/Terryc21/tutorial-creator) — annotated tutorials from your codebase
+
 ## Author
 
-Created by **Terry Nyberg**, [Coffee & Code LLC](https://stuffolio.app/).
+Terry Nyberg, [Coffee & Code LLC](https://stuffolio.app/). If prompter has saved you a wasted reorientation turn, [a coffee](https://buymeacoffee.com/stuffolio) is appreciated. Issue reports about what worked or didn't are more useful.
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?style=flat&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/stuffolio)
 
 ## License
 
