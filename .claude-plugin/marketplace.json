@@ -1,0 +1,22 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "prompter",
+  "description": "Rewrites your prompts for clarity, typo correction, and actionability before they run — only when it would actually improve them",
+  "owner": {
+    "name": "Terry Nyberg"
+  },
+  "plugins": [
+    {
+      "name": "prompter",
+      "version": "1.0.0",
+      "source": "./",
+      "description": "A Claude Code skill that evaluates whether rewriting your prompt would meaningfully improve it, then rewrites only when worth it. Triggers on 'rewrite my prompt', 'fix the typos in this prompt', 'make this clearer', or short/ambiguous prompts. Displays the rewrite and waits for approval.",
+      "author": {
+        "name": "Terry Nyberg"
+      },
+      "homepage": "https://github.com/Terryc21/prompter",
+      "license": "Apache-2.0",
+      "category": "productivity"
+    }
+  ]
+}

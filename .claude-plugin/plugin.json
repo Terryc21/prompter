@@ -1,0 +1,23 @@
+{
+  "name": "prompter",
+  "version": "1.0.0",
+  "description": "Evaluates whether rewriting your prompt for clarity, typo correction, or actionability would meaningfully improve it, and rewrites only when it would. Displays the rewrite and waits for approval before running.",
+  "author": {
+    "name": "Terry Nyberg"
+  },
+  "repository": "https://github.com/Terryc21/prompter",
+  "license": "Apache-2.0",
+  "keywords": [
+    "prompt-engineering",
+    "claude-code",
+    "ai-tools",
+    "productivity",
+    "developer-tools"
+  ],
+  "skills": [
+    {
+      "name": "prompter",
+      "description": "Rewrites your prompt for clarity, typo correction, and actionability — only when it would meaningfully improve it."
+    }
+  ]
+}
