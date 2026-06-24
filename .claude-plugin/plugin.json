@@ -13,11 +13,5 @@
     "ai-tools",
     "productivity",
     "developer-tools"
-  ],
-  "skills": [
-    {
-      "name": "prompter",
-      "description": "Rewrites your prompt for clarity, typo correction, and actionability — only when it would meaningfully improve it."
-    }
   ]
 }
