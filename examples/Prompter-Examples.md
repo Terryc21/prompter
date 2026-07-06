@@ -7,7 +7,7 @@ A representative sample of what Prompter does to user input before Claude Code a
 
 ## Contents
 
-Twenty examples, in file order. Pattern themes are noted in parentheses.
+Twenty-one examples, in file order. Pattern themes are noted in parentheses.
 
 1. "the api is returning 500 fix it" — *diagnose-before-fix*
 2. "make this match the design" — *specify dimensions*
@@ -29,6 +29,7 @@ Twenty examples, in file order. Pattern themes are noted in parentheses.
 18. "commit the api changes also push them" — *minor sharpening*
 19. "chek if hte test for cateogry coutn…" — *typo repair*
 20. "Run npm test" — *no rewrite needed*
+21. "identify items in Claude.md that look like they were added to fix an issue that no lonerg exists…" — *pin analytical ask into named categories + guardrail*
 
 ---
 
@@ -230,6 +231,16 @@ Twenty examples, in file order. Pattern themes are noted in parentheses.
 > **Prompter:** no rewrite needed — prompt is already clear and actionable. Run `npm test`.
 
 (Prompter still surfaces a one-line "no rewrite needed" notice so the user knows the skill saw the prompt and made a deliberate decision, rather than silently skipping.)
+
+---
+
+**Raw:**
+> Identify items in Claude.md that look like they were added to fix an issue that no lonerg exists or that has become stale, or have become counterproductive, or hs restricted you from making better decisions.
+
+**Rewritten:**
+> Audit `CLAUDE.md` for rules that were added to fix a past problem but are now liabilities. For each, classify which failure mode it hits: (a) **stale** — the issue it guarded against no longer exists; (b) **counterproductive** — it now causes more friction than the problem it prevented; or (c) **over-restrictive** — it blocks you from making a better decision in cases the rule's author didn't anticipate. Cite the specific line/section, explain the original intent (why it was likely added), why it's now a problem, and a proposed change. Don't edit yet — present findings in a table for approval first.
+
+("Look for stale/counterproductive rules" is a vague analytical ask that would return an unstructured list. The rewrite pins it into a deliverable shape: three *named* failure-mode categories to classify against, a fixed per-finding structure (cite → intent → problem → proposed change), and a "don't edit yet, table first" guardrail the user clearly wanted but hadn't stated. It also silently repairs the typos. This is the highest-value class of rewrite — turning an open-ended request into something the model can execute consistently.)
 
 ---
 
