@@ -8,31 +8,7 @@ A representative sample of what Prompter does to user input before Claude Code a
 ## Contents
 
 Twenty-one examples, in file order. Pattern themes are noted in parentheses.
-
-1. "the api is returning 500 fix it" — *diagnose-before-fix*
-2. "make this match the design" — *specify dimensions*
-3. "can you check that file for the same pattern" — *resolve ambiguous reference*
-4. "add caching here" — *preempt design decisions*
-5. "rename UserService to AccountService everywhere" — *preempt blast radius*
-6. "yes" — *skip (permission response)*
-7. "the tests are flaky, fix them" — *diagnose-before-fix*
-8. "is the snapshot test still recording and if so…" — *decompose stacked questions*
-9. "find a security issue in the auth code" — *threat-model framing*
-10. "the build is slow, fix it" — *diagnose-before-fix*
-11. "why does this work" — *preserve user voice (no rewrite)*
-12. "deal with the failing migration test" — *resolve dangerous verb*
-13. "do the thing we just did but for the other endpoint" — *resolve from context*
-14. "audit user.service.ts" — *specify audit dimensions*
-15. "can you maybe possibly take a look…" — *preserve register, trim redundancy*
-16. "set up the linter" — *concretize vague verb*
-17. "fix the typo on line 47" — *resist scope creep*
-18. "commit the api changes also push them" — *minor sharpening*
-19. "chek if hte test for cateogry coutn…" — *typo repair*
-20. "Run npm test" — *no rewrite needed*
-21. "identify items in Claude.md that look like they were added to fix an issue that no lonerg exists…" — *pin analytical ask into named categories + guardrail*
-
 ---
-
 **Raw:**
 > the api is returning 500 fix it
 
