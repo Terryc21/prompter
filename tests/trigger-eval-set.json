@@ -1,0 +1,22 @@
+[
+  {"query": "hey can you rewrite my prompt below to make it clearer before you run it: 'fix the auth thing, you know, like the thing that broke last week'", "should_trigger": true},
+  {"query": "fix the typos in this prompt: 'pls udpate the databse schema to add a new colum for user_email'", "should_trigger": true},
+  {"query": "this prompt feels too vague, can you make it more actionable: 'improve performance'", "should_trigger": true},
+  {"query": "before you do anything can you clean up what I just typed, it's messy: 'the thing i said yesterday about the api endpoint pls fix that again i think it broke'", "should_trigger": true},
+  {"query": "make this prompt clearer: 'handle the edge case'", "should_trigger": true},
+  {"query": "can u make this more actionable? 'clean up the code'", "should_trigger": true},
+  {"query": "do the thing we talked about", "should_trigger": true},
+  {"query": "can you improve the wording of this Claude Code prompt I'm about to send: 'refactor stuff'", "should_trigger": true},
+  {"query": "/prompter fix the bug in teh payment flow, dont push yet", "should_trigger": true},
+  {"query": "I'm about to kick off a coding session and I typed this super fast: 'ok so like add the thing to the checkout page where if item is out of stock show a message, also make sure it works on mobile i think there was an issue there too' -- can you tighten this up before I send it?", "should_trigger": true},
+  {"query": "Can you rewrite this cover letter to sound more professional? 'I am writing to apply for the marketing position at your company...'", "should_trigger": false},
+  {"query": "There's a typo in the README, can you fix it? It says 'recieve' instead of 'receive'.", "should_trigger": false},
+  {"query": "Make this email to my landlord clearer and more actionable: 'the sink still isnt fixed can someone come by'", "should_trigger": false},
+  {"query": "looks good, go ahead", "should_trigger": false},
+  {"query": "Option 2", "should_trigger": false},
+  {"query": "Run the test suite", "should_trigger": false},
+  {"query": "What does the prompter skill do?", "should_trigger": false},
+  {"query": "Can you help make this blog post intro punchier and more actionable for readers? 'In today's fast-paced world, businesses need...'", "should_trigger": false},
+  {"query": "Fix the typos in this error message text before we ship it: 'Youre password is incorect'", "should_trigger": false},
+  {"query": "yes", "should_trigger": false}
+]
