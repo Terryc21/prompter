@@ -1,6 +1,6 @@
 {
   "name": "prompter",
-  "version": "1.0.0",
+  "version": "1.3.0",
   "description": "Evaluates whether rewriting your prompt for clarity, typo correction, or actionability would meaningfully improve it, and rewrites only when it would. Displays the rewrite and waits for approval before running.",
   "author": {
     "name": "Terry Nyberg"
