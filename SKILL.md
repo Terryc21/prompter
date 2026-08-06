@@ -40,6 +40,8 @@ Three modes are supported.
 - **This session** — Rewrite prompts for the rest of this conversation. No files are modified.
 - **Add to CLAUDE.md** — Add a Prompt Rewriting rule to the project's CLAUDE.md so it persists across all future sessions. Pair with "Remove from CLAUDE.md" to uninstall later.
 
+**"Try it once" state.** Whether the "once" has already fired is tracked the same way as everything else in this skill: from the most recent "**Prompter:**"-prefixed message in context (a rewrite, a skip notice, or the expiration message below). If context has been summarized or compacted since activation and no such message is visible, treat the "once" as expired rather than assuming it's still pending — re-invoke `/skill prompter` to restart it. This mirrors why "Next N prompts" mode was removed in v1.3.0 (see "What was removed" below): don't trust an implicit turn-count that summarization can silently reset.
+
 ### Initial invocation
 
 When `/skill prompter` is run for the first time in a session, ask the user which mode to activate using AskUserQuestion. The options are the three above.
