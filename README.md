@@ -122,8 +122,19 @@ It just rewrites the next prompt for clarity, shows you the rewrite, and waits f
 
 ## Install
 
-> [!NOTE]
-> Manual install only — prompter is not yet packaged as a Claude Code plugin (unlike sibling skills `bug-echo`, `radar-suite`, etc.). Plugin packaging is on the roadmap.
+Two commands in Claude Code, run one at a time:
+
+```
+/plugin marketplace add Terryc21/prompter
+```
+
+```
+/plugin install prompter@prompter
+```
+
+> **Why two commands?** Claude Code's slash-command dispatcher treats the second `/plugin` as text inside the first command. Run them one at a time.
+
+**Manual install** (if you'd rather not use the plugin system):
 
 ```bash
 git clone https://github.com/Terryc21/prompter.git

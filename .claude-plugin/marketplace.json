@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "prompter",
-      "version": "1.0.0",
+      "version": "1.3.0",
       "source": "./",
       "description": "A Claude Code skill that evaluates whether rewriting your prompt would meaningfully improve it, then rewrites only when worth it. Triggers on 'rewrite my prompt', 'fix the typos in this prompt', 'make this clearer', or short/ambiguous prompts. Displays the rewrite and waits for approval.",
       "author": {
