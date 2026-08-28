@@ -2,9 +2,14 @@
 
 ![Version](https://img.shields.io/github/v/tag/Terryc21/prompter?label=version) ![Last commit](https://img.shields.io/github/last-commit/Terryc21/prompter) ![Stars](https://img.shields.io/github/stars/Terryc21/prompter?style=flat) ![Issues](https://img.shields.io/github/issues/Terryc21/prompter) ![License](https://img.shields.io/github/license/Terryc21/prompter)
 
-**A Claude Code skill that rewrites your prompts for clarity before they run.**
+**You type a short prompt. Claude runs with it in a direction you didn't choose, and the next
+turn is spent reorienting.**
 
-*~3 min read · scan the TL;DR if you only have 30 seconds*
+Not because the prompt was wrong — it was grammatically fine and perfectly clear to you. It was
+under-specified along the dimensions that turned out to matter. prompter catches that before the
+run, shows you a rewrite, and waits for your approval.
+
+*4 min read · scan the TL;DR if you only have 30 seconds · [worked examples](examples/Prompter-Examples.md) · [upgrading from v1.2.x](UPGRADING.md)*
 
 ## TL;DR
 
@@ -70,23 +75,10 @@ What prompter did:
 - **Specified the deliverable shape.** A ranked table with name, category, and confidence — reviewable in 30 seconds, not a wall of prose.
 - **Added the missing guardrail.** "Don't apply fixes yet" — the obvious thing the user would have written if they hadn't been mid-thought.
 
-A second case where the under-specification problem is the threat model the user has in their head but didn't write down:
-
-**Original:**
-
-> find a security issue in the auth code
-
-**Rewritten:**
-
-> Audit the authentication code for vulnerabilities, scoped to the OWASP Top 10 categories most relevant to auth: broken access control, cryptographic failures, identification/authentication failures, and security misconfiguration. For each finding, provide: file and line, OWASP category, exploit scenario in one sentence, and severity (critical/high/medium/low). Skip theoretical issues that require an attacker model not present in this codebase (e.g., physical device access if this is a server). Don't propose fixes yet — just the audit.
-
-What prompter did:
-
-- **Replaced "a security issue" with a threat model.** The singular "a security issue" was the leak: it framed the task as bug-hunting until something is found, then stop. The rewrite reframes it as a scoped audit against a specific industry standard (OWASP Top 10), which means the audit *terminates with a complete report* instead of stopping at the first hit.
-- **Cut the categories that don't apply.** OWASP has 10; the rewrite picked the 4 that touch auth and explicitly noted to skip the rest. Without this, Claude would either over-audit (covering injection in a code path with no user input) or arbitrarily under-audit.
-- **Demanded a structured finding format.** File, line, OWASP category, exploit scenario, severity. A reviewer can scan this in 60 seconds and decide what to prioritize. A wall of prose can't be triaged.
-- **Added the scope discipline.** "Skip theoretical issues that require an attacker model not present in this codebase" — the line that prevents Claude from listing a CSRF concern on a backend service that has no browser-facing surface.
-- **Added the same diagnose-before-fix guardrail.** "Don't propose fixes yet — just the audit." Findings before remediation.
+The same shape shows up wherever the user's real intent is a threat model, a scope, or a
+deliverable format they never wrote down. [A second worked example — "find a security issue in
+the auth code" — is in the examples file](examples/Prompter-Examples.md), with the same
+per-bullet commentary.
 
 prompter also handles the smaller, more common cases — typos, dangling references like "that file," stacked questions, prompts that should *not* be rewritten because they're already clear, and the cases where it correctly holds back to preserve the user's voice. Twenty-one worked examples covering typos, dangling references, stacked questions, hedging preservation, no-rewrite cases, threat-model framing, and pinning open-ended analytical asks into named categories are in [examples/Prompter-Examples.md](examples/Prompter-Examples.md).
 
@@ -156,55 +148,11 @@ mkdir -p /path/to/project/.claude/skills && cp -r prompter /path/to/project/.cla
 
 ## Upgrading from v1.2.x
 
-v1.3.0 is a backward-incompatible rewrite. If you installed prompter before May 31, 2026, the version on disk is older and won't match this README. **You will not get errors** — Claude Code will keep using the old SKILL.md happily — but the behavior will not match what's documented here until you upgrade.
+v1.3.0 is a backward-incompatible rewrite. If you installed prompter before May 31, 2026, the
+version on disk won't match this README — no errors, but the behavior won't match what's
+documented here until you upgrade.
 
-### What changed
-
-- **"Next N prompts" mode is gone.** The countdown-tracking relied on the LLM emitting and preserving a markdown status line across turns, which is unreliable across context summarization. Use "This session" (covers the same use case for one conversation) or "Add to CLAUDE.md" (covers the cross-session case). If your habit was `/skill prompter` → "Next N prompts" → "10", change it to `/skill prompter` → "This session" — same end result, no fragile bookkeeping.
-- **"Flag exemplary rewrites" feature is gone.** The trigger axes rarely fired in practice and the per-rewrite flag was busywork. Star your own favorites in `examples/Prompter-Examples.md` if you want a curated list.
-- **CLAUDE.md template changed.** v1.2.x installed a 14-line block that duplicated the skip list from SKILL.md. v1.3.0 installs a 6-line block that points at SKILL.md instead. This prevents the skip list from silently drifting across the two files. If you have a v1.2.x block in a project's CLAUDE.md and you re-run "Add to CLAUDE.md," the skill will detect the difference and ask whether to keep, replace, or merge — your existing block is preserved by default.
-- **Re-invocation behavior changed.** v1.2.x always re-showed the mode picker on every `/prompter` invocation. v1.3.0 skips the picker if your message has prompt content alongside `/prompter` (signaling "evaluate THIS prompt now") and only shows it when you type `/prompter` alone (signaling "I want to manage settings"). This removes the friction of re-answering the picker on every rewrite.
-
-### How to upgrade
-
-```bash
-# Pull the latest from GitHub.
-cd /path/to/your/local/prompter && git pull origin main
-
-# OR re-clone fresh.
-git clone https://github.com/Terryc21/prompter.git /tmp/prompter-v1.3.0
-```
-
-Then copy over the install location. The new SKILL.md will replace the old one in place:
-
-```bash
-# Global install upgrade:
-cp -r /tmp/prompter-v1.3.0/SKILL.md ~/.claude/skills/prompter/SKILL.md
-
-# OR replace the whole skill folder (preserves nothing custom):
-rm -rf ~/.claude/skills/prompter && cp -r /tmp/prompter-v1.3.0 ~/.claude/skills/prompter
-```
-
-If you customized SKILL.md, diff before overwriting:
-
-```bash
-diff ~/.claude/skills/prompter/SKILL.md /tmp/prompter-v1.3.0/SKILL.md
-```
-
-**Restart Claude Code after replacing SKILL.md.** The skill file is read at session start; existing sessions will keep using the version they loaded.
-
-### CLAUDE.md sections in your projects
-
-If you've used "Add to CLAUDE.md" in multiple projects under v1.2.x, those projects all have the v1.2.x-style 14-line block with the skip list inline. They will keep working — the behavior described by the v1.2.x block is consistent with v1.3.0. You don't need to migrate them unless you want the cleaner v1.3.0 template (which avoids the drift risk).
-
-To upgrade a project's CLAUDE.md to the v1.3.0 template:
-1. Run `/skill prompter` → "Add to CLAUDE.md" in that project.
-2. The skill detects the existing block, sees it differs from the v1.3.0 template, and asks whether to (a) keep yours, (b) replace with the template, or (c) merge specific lines.
-3. Pick (b) to upgrade or (a) to keep your customizations.
-
-If you have customizations in the v1.2.x block (added project-specific rules), pick (c) and merge by hand.
-
----
+**[What changed, and how to upgrade →](UPGRADING.md)**
 
 ## History
 

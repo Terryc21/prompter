@@ -96,7 +96,13 @@ Twenty-one examples, in file order. Pattern themes are noted in parentheses.
 **Rewritten:**
 > Audit the authentication code for vulnerabilities, scoped to the OWASP Top 10 categories most relevant to auth: broken access control, cryptographic failures, identification/authentication failures, and security misconfiguration. For each finding, provide: file and line, OWASP category, exploit scenario in one sentence, and severity (critical/high/medium/low). Skip theoretical issues that require an attacker model not present in this codebase. Don't propose fixes yet — just the audit.
 
-(Bug-hunt framing terminates at the first hit; scoped-audit framing terminates with a complete report. Picking four of OWASP's ten categories scopes the audit; the structured finding format makes it triageable in 60 seconds. See the README for the full version with per-bullet commentary.)
+What prompter did:
+
+- **Replaced "a security issue" with a threat model.** The singular "a security issue" was the leak: it framed the task as bug-hunting until something is found, then stop. The rewrite reframes it as a scoped audit against a specific industry standard (OWASP Top 10), which means the audit *terminates with a complete report* instead of stopping at the first hit.
+- **Cut the categories that don't apply.** OWASP has 10; the rewrite picked the 4 that touch auth and explicitly noted to skip the rest. Without this, Claude would either over-audit (covering injection in a code path with no user input) or arbitrarily under-audit.
+- **Demanded a structured finding format.** File, line, OWASP category, exploit scenario, severity. A reviewer can scan this in 60 seconds and decide what to prioritize. A wall of prose can't be triaged.
+- **Added the scope discipline.** "Skip theoretical issues that require an attacker model not present in this codebase" — the line that prevents Claude from listing a CSRF concern on a backend service that has no browser-facing surface.
+- **Added the same diagnose-before-fix guardrail.** "Don't propose fixes yet — just the audit." Findings before remediation.
 
 ---
 
