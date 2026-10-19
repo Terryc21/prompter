@@ -22,20 +22,20 @@ cd /path/to/your/local/prompter && git pull origin main
 git clone https://github.com/Terryc21/prompter.git /tmp/prompter-v1.3.0
 ```
 
-Then copy over the install location. The new SKILL.md will replace the old one in place:
+Then copy over the install location. The skill now lives in `skills/prompter/` inside the repo (earlier versions kept `SKILL.md` at the repo root), so copy from there. The new SKILL.md will replace the old one in place:
 
 ```bash
 # Global install upgrade:
-cp -r /tmp/prompter-v1.3.0/SKILL.md ~/.claude/skills/prompter/SKILL.md
+cp /tmp/prompter-v1.3.0/skills/prompter/SKILL.md ~/.claude/skills/prompter/SKILL.md
 
 # OR replace the whole skill folder (preserves nothing custom):
-rm -rf ~/.claude/skills/prompter && cp -r /tmp/prompter-v1.3.0 ~/.claude/skills/prompter
+rm -rf ~/.claude/skills/prompter && cp -r /tmp/prompter-v1.3.0/skills/prompter ~/.claude/skills/prompter
 ```
 
 If you customized SKILL.md, diff before overwriting:
 
 ```bash
-diff ~/.claude/skills/prompter/SKILL.md /tmp/prompter-v1.3.0/SKILL.md
+diff ~/.claude/skills/prompter/SKILL.md /tmp/prompter-v1.3.0/skills/prompter/SKILL.md
 ```
 
 **Restart Claude Code after replacing SKILL.md.** The skill file is read at session start; existing sessions will keep using the version they loaded.

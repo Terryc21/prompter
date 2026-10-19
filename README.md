@@ -15,7 +15,7 @@ run, shows you a rewrite, and waits for your approval.
 
 - **What:** Intercepts your prompts, evaluates whether rewriting would meaningfully improve them, and shows you the rewrite for approval before Claude acts.
 - **Why:** Most prompts are short, grammatically fine, and under-specified along the dimensions that matter most. Claude runs with them in a direction you didn't choose, and the next turn is spent reorienting.
-- **Install:** `git clone` into `~/.claude/skills/`; then `/skill prompter` in any session.
+- **Install:** `git clone` the repo, copy `skills/prompter/` into `~/.claude/skills/`; then `/skill prompter` in any session.
 - **Try first:** `/skill prompter`, choose "Try it once," then submit a one-liner like *"the tests are flaky, fix them"* — see what prompter would have made of it.
 - **Example output:** [20 worked examples covering typos, dangling references, threat-model framing, and no-rewrite cases](examples/Prompter-Examples.md).
 - **Maturity:** v1.3.0; manual install (plugin packaging on the roadmap); built and used daily while shipping [Stuffolio](https://stuffolio.app).
@@ -132,16 +132,18 @@ Two commands in Claude Code, run one at a time:
 git clone https://github.com/Terryc21/prompter.git
 ```
 
+The skill lives in `skills/prompter/` inside the repo, so copy that folder, not the repo root: a skills folder that holds the whole repo has no `SKILL.md` at the top and the skill will not load.
+
 **Global install** (all projects):
 
 ```bash
-mkdir -p ~/.claude/skills && cp -r prompter ~/.claude/skills/
+mkdir -p ~/.claude/skills && cp -r prompter/skills/prompter ~/.claude/skills/
 ```
 
 **Project-specific install** (one project only):
 
 ```bash
-mkdir -p /path/to/project/.claude/skills && cp -r prompter /path/to/project/.claude/skills/
+mkdir -p /path/to/project/.claude/skills && cp -r prompter/skills/prompter /path/to/project/.claude/skills/
 ```
 
 ---
