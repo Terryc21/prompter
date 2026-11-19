@@ -7,7 +7,7 @@ cut — this is the full upgrade guide.*
 
 Nothing was removed, and nothing you rely on stops working. The changes:
 
-- **The command is `/prompter`.** Earlier docs said `/prompter`, which isn't a Claude Code command. A plugin install uses `/prompter:prompter`.
+- **The command is `/prompter`.** Earlier docs said `/skill prompter`, which isn't a Claude Code command. A plugin install uses `/prompter:prompter`.
 - **The mode menu appears less often.** It now shows only when you type `/prompter` by itself. A direct request ("make this prompt clearer: …") gets the rewrite straight away, and so does a session started in a project whose CLAUDE.md has the Prompt Rewriting rule.
 - **"Remove from CLAUDE.md" is on the menu** whenever the rule exists, and the menu says which file it's in.
 - **"Add to CLAUDE.md" asks where.** Choose this project (`CLAUDE.md` at the project root) or all projects (`~/.claude/CLAUDE.md`).
