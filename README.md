@@ -15,15 +15,15 @@ run, shows you a rewrite, and waits for your approval.
 
 - **What:** Intercepts your prompts, evaluates whether rewriting would meaningfully improve them, and shows you the rewrite for approval before Claude acts.
 - **Why:** Most prompts are short, grammatically fine, and under-specified along the dimensions that matter most. Claude runs with them in a direction you didn't choose, and the next turn is spent reorienting.
-- **Install:** `git clone` the repo, copy `skills/prompter/` into `~/.claude/skills/`; then `/skill prompter` in any session.
-- **Try first:** `/skill prompter`, choose "Try it once," then submit a one-liner like *"the tests are flaky, fix them"* — see what prompter would have made of it.
-- **Example output:** [20 worked examples covering typos, dangling references, threat-model framing, and no-rewrite cases](examples/Prompter-Examples.md).
-- **Maturity:** v1.3.0; manual install (plugin packaging on the roadmap); built and used daily while shipping [Stuffolio](https://stuffolio.app).
+- **Install:** `/plugin marketplace add Terryc21/prompter`, then `/plugin install prompter@prompter` (or copy `skills/prompter/` into `~/.claude/skills/` by hand); then `/prompter` in any session (`/prompter:prompter` for a plugin install).
+- **Try first:** `/prompter`, choose "Try it once," then submit a one-liner like *"the tests are flaky, fix them"* — see what prompter would have made of it.
+- **Example output:** [21 worked examples covering typos, dangling references, threat-model framing, and no-rewrite cases](examples/Prompter-Examples.md).
+- **Maturity:** v1.4.0; installs as a Claude Code plugin or by manual copy; built and used daily while shipping [Stuffolio](https://stuffolio.app).
 - **Upgrading from v1.2.x?** See [Upgrading](#upgrading-from-v12x) — v1.3.0 removed "Next N prompts" mode and the "Flag exemplary rewrites" feature.
 
 ## Newer to Claude Code?
 
-A **skill** is a markdown file Claude Code knows how to run. When you type `/skill prompter`, Claude follows the instructions in this skill, intercepts your next prompt, and asks whether you want to rewrite it before acting. You don't have to memorize anything — the skill tells Claude what to do, you approve or skip each rewrite.
+A **skill** is a markdown file Claude Code knows how to run. When you type `/prompter`, Claude follows the instructions in this skill, intercepts your next prompt, and asks whether you want to rewrite it before acting. You don't have to memorize anything — the skill tells Claude what to do, you approve or skip each rewrite.
 
 ---
 
@@ -38,19 +38,19 @@ The skill is opinionated about what *not* to rewrite: option selections, permiss
 ## Usage
 
 ```
-/skill prompter
+/prompter
 ```
+
+If you installed prompter as a plugin, the command is `/prompter:prompter`.
 
 Activation modes:
 
 - **Try it once:** evaluate and (if warranted) rewrite the next prompt, then stop
 - **This session:** the evaluate/rewrite behavior applies until the session ends
-- **Add to CLAUDE.md:** add the rewrite rule to your project's CLAUDE.md so it persists across sessions
+- **Add to CLAUDE.md:** add the rewrite rule to a CLAUDE.md so it persists across sessions, for this project or for all your projects
 - **Remove from CLAUDE.md:** strip the rule when you no longer want persistent rewriting
 
-The skill walks you through the choice on first invocation.
-
-**Re-invocation behavior.** Once a mode is active, typing `/prompter` alongside your prompt evaluates *that* prompt without re-asking for a mode. The mode picker only appears when you type `/prompter` by itself, signaling you want to change settings.
+**When the mode menu appears.** Only when you type `/prompter` by itself, which signals you want to change settings. Typing `/prompter` alongside a prompt evaluates *that* prompt. Asking directly ("make this prompt clearer: …") gets you the rewrite, not a menu. And if you added the rule to CLAUDE.md, new sessions start rewriting without asking again.
 
 ---
 
@@ -92,10 +92,10 @@ prompter doesn't take a file or feature argument — there's nothing to scan. It
 |---|---|
 | **Try it once** | Evaluate the next prompt, rewrite if warranted, then stop. Good first run. |
 | **This session** | Rewrite for the rest of this Claude Code conversation. No files modified. |
-| **Add to CLAUDE.md** | Insert a Prompt Rewriting rule into your project's CLAUDE.md so it persists across sessions. |
-| **Remove from CLAUDE.md** | Strip the rule when you no longer want persistent rewriting. |
+| **Add to CLAUDE.md** | Insert a Prompt Rewriting rule into this project's `CLAUDE.md` or your global `~/.claude/CLAUDE.md`, so it persists across sessions. You choose which. |
+| **Remove from CLAUDE.md** | Strip the rule when you no longer want persistent rewriting. Offered only when the rule exists, and names the file it was found in. |
 
-**Fresh vs prior history.** prompter is stateless by design — every prompt is evaluated from scratch against the rules in SKILL.md. There's no per-user model that "learns your style," no prior-rewrite cache that biases the next call. Re-invocation in the same session detects an active mode: if your message contains prompt text, the skill silently evaluates it under the active mode; if your message is `/prompter` alone, the mode picker reappears so you can switch settings. The Add-to-CLAUDE.md path never duplicates silently — it diffs against any existing section and asks before overwriting. If you want a different style, edit SKILL.md or override the rule in your project's CLAUDE.md.
+**Fresh vs prior history.** prompter is stateless by design — every prompt is evaluated from scratch against the rules in SKILL.md. There's no per-user model that "learns your style," no prior-rewrite cache that biases the next call. Re-invocation in the same session detects an active mode: if your message contains prompt text, the skill evaluates it under the active mode; if your message is `/prompter` alone, the mode menu reappears so you can switch settings. The Add-to-CLAUDE.md path never duplicates silently — it diffs against any existing section and asks before overwriting. If you want a different style, edit SKILL.md or override the rule in your project's CLAUDE.md.
 
 ---
 
@@ -149,6 +149,8 @@ mkdir -p /path/to/project/.claude/skills && cp -r prompter/skills/prompter /path
 ---
 
 ## Upgrading from v1.2.x
+
+**Coming from v1.3.0?** Nothing was removed in v1.4.0. See [UPGRADING.md](UPGRADING.md) for what changed.
 
 v1.3.0 is a backward-incompatible rewrite. If you installed prompter before May 31, 2026, the
 version on disk won't match this README — no errors, but the behavior won't match what's
