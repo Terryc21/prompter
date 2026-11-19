@@ -96,7 +96,7 @@ Twenty-one examples, in file order. Pattern themes are noted in parentheses.
 **Rewritten:**
 > Diagnose flakiness in the test suite before changing anything. Categorize each failing test as: (1) timing-dependent (sleeps, polling, real clocks), (2) order-dependent (shared state, leaking fixtures), (3) environment-dependent (network, filesystem, machine-specific), or (4) genuinely racy (concurrency bugs in the code under test). Produce a ranked table with the test name, category, and confidence. Don't apply fixes yet.
 
-(For the four-bullet commentary explaining what this rewrite did, see the [worked example in the README](../README.md#example-rewrites).)
+(For the four-bullet commentary explaining what this rewrite did, see the [worked example in the README](../README.md#what-a-rewrite-looks-like).)
 
 ---
 

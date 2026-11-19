@@ -2,63 +2,71 @@
 
 ![Version](https://img.shields.io/github/v/tag/Terryc21/prompter?label=version) ![Last commit](https://img.shields.io/github/last-commit/Terryc21/prompter) ![Stars](https://img.shields.io/github/stars/Terryc21/prompter?style=flat) ![Issues](https://img.shields.io/github/issues/Terryc21/prompter) ![License](https://img.shields.io/github/license/Terryc21/prompter)
 
-**You type a short prompt. Claude runs with it in a direction you didn't choose, and the next
-turn is spent reorienting.**
+**Your prompt is clear to you. Is it clear to Claude?**
 
-Not because the prompt was wrong — it was grammatically fine and perfectly clear to you. It was
-under-specified along the dimensions that turned out to matter. prompter catches that before the
-run, shows you a rewrite, and waits for your approval.
+prompter reads each prompt before Claude acts on it and decides whether a rewrite would help.
+Most of the time it wouldn't, and your prompt runs as written. When a prompt is vague, misspelled,
+or missing something obvious, prompter shows you a sharper version and waits. You approve it,
+correct it, or run your original.
 
-*4 min read · scan the TL;DR if you only have 30 seconds · [worked examples](examples/Prompter-Examples.md) · [upgrading from v1.2.x](UPGRADING.md)*
-
-## TL;DR
-
-- **What:** Intercepts your prompts, evaluates whether rewriting would meaningfully improve them, and shows you the rewrite for approval before Claude acts.
-- **Why:** Most prompts are short, grammatically fine, and under-specified along the dimensions that matter most. Claude runs with them in a direction you didn't choose, and the next turn is spent reorienting.
-- **Install:** `/plugin marketplace add Terryc21/prompter`, then `/plugin install prompter@prompter` (or copy `skills/prompter/` into `~/.claude/skills/` by hand); then `/prompter` in any session (`/prompter:prompter` for a plugin install).
-- **Try first:** `/prompter`, choose "Try it once," then submit a one-liner like *"the tests are flaky, fix them"* — see what prompter would have made of it.
-- **Example output:** [21 worked examples covering typos, dangling references, threat-model framing, and no-rewrite cases](examples/Prompter-Examples.md).
-- **Maturity:** v1.4.0; installs as a Claude Code plugin or by manual copy; built and used daily while shipping [Stuffolio](https://stuffolio.app).
-- **Upgrading from v1.2.x?** See [Upgrading](#upgrading-from-v12x) — v1.3.0 removed "Next N prompts" mode and the "Flag exemplary rewrites" feature.
-
-## Newer to Claude Code?
-
-A **skill** is a markdown file Claude Code knows how to run. When you type `/prompter`, Claude follows the instructions in this skill, intercepts your next prompt, and asks whether you want to rewrite it before acting. You don't have to memorize anything — the skill tells Claude what to do, you approve or skip each rewrite.
+*5 min read · [21 worked examples](examples/Prompter-Examples.md) · [what changed in v1.4.0](UPGRADING.md)*
 
 ---
 
-## Why this exists
+## The problem
 
-`prompter` intercepts your prompts before execution, **evaluates whether rewriting would meaningfully improve them**, and — when it would — shows you the rewrite and asks for approval before continuing. Over time, this becomes a subtle feedback loop: you start internalizing what makes prompts effective simply by watching them improve.
+Short prompts feel clear to the person who wrote them. "Fix the flaky tests." "Audit the auth
+code." "Make this match the design." You know what you meant. Claude has to guess.
 
-The skill is opinionated about what *not* to rewrite: option selections, permission responses ("yes", "proceed"), follow-up answers, and prompts that are already clear. It only rewrites when there is a real improvement to make.
+So it guesses. It starts editing tests before anyone knows why they fail, or audits for the
+problems it thinks matter instead of the ones you were worried about. The work isn't wrong,
+exactly. It's aimed somewhere you didn't choose, and the next turn goes to steering it back.
 
----
-
-## Usage
-
-```
-/prompter
-```
-
-If you installed prompter as a plugin, the command is `/prompter:prompter`.
-
-Activation modes:
-
-- **Try it once:** evaluate and (if warranted) rewrite the next prompt, then stop
-- **This session:** the evaluate/rewrite behavior applies until the session ends
-- **Add to CLAUDE.md:** add the rewrite rule to a CLAUDE.md so it persists across sessions, for this project or for all your projects
-- **Remove from CLAUDE.md:** strip the rule when you no longer want persistent rewriting
-
-**When the mode menu appears.** Only when you type `/prompter` by itself, which signals you want to change settings. Typing `/prompter` alongside a prompt evaluates *that* prompt. Asking directly ("make this prompt clearer: …") gets you the rewrite, not a menu. And if you added the rule to CLAUDE.md, new sessions start rewriting without asking again.
+The prompt wasn't badly written. It left out the things that turned out to matter: what to check,
+what to hand back, and what not to touch yet.
 
 ---
 
-## Example rewrites
+## What prompter does
 
-<!-- If this heading is renamed, update the two cross-references in examples/Prompter-Examples.md (search for `#example-rewrites`). -->
+Before Claude acts, prompter asks one question: would rewriting this prompt make a real
+difference? If not, it says so in one line and gets out of the way. No rewrite is a good result.
 
-prompter's biggest payoff is on prompts that are short, grammatically fine, and **under-specified along the dimensions that matter most.** A blunt verb plus a familiar complaint is the classic shape: "Fix the flaky tests." "Refactor this." "Audit the auth code." Claude will run with it, but in a direction you didn't choose, and the next turn is spent reorienting.
+When a rewrite would help, it does only what the prompt needs. The most common moves:
+
+- **Diagnose before fixing.** "The build is slow, fix it" becomes: find the cause, report it, then wait.
+- **Name what to check.** "Audit this file" gets the categories to audit against.
+- **Name what comes back.** A ranked table, a grouped list, or a one-paragraph answer.
+- **List before changing everything.** "Rename this everywhere" becomes: show me every place first.
+- **Add the guardrail you forgot.** "Don't edit yet." "Ask before pushing."
+- **Resolve "that file".** When the conversation makes it clear which file, the rewrite names it. When it doesn't, prompter asks.
+- **Fix typos, keep your voice.** Spelling gets fixed; casual phrasing stays.
+
+The rewrite appears under the label **Rewritten prompt:**, and nothing runs until you answer.
+Say yes and the rewrite runs. Correct it and you get a new version. Say no and your original runs
+exactly as you typed it.
+
+---
+
+## What it leaves alone
+
+prompter stays out of the way of anything that isn't a new request:
+
+- answers like "yes", "go ahead", or "Option 2"
+- replies to a question Claude asked you
+- slash commands such as `/commit`
+- pasted logs, stack traces, code, and diffs
+- prompts that are already clear
+
+It also never changes what you're asking for. If you asked for a fix, the rewrite won't add a
+refactor. It may add a step that comes first, like "find the cause before changing code", and you
+see that before anything runs.
+
+---
+
+## What a rewrite looks like
+
+<!-- examples/Prompter-Examples.md links to this heading (#what-a-rewrite-looks-like). Update that link if you rename it. -->
 
 **Original:**
 
@@ -70,45 +78,40 @@ prompter's biggest payoff is on prompts that are short, grammatically fine, and 
 
 What prompter did:
 
-- **Refused to skip the diagnosis.** "Fix them" became "diagnose, categorize, rank." The original would have started editing tests before anyone knew *which kind* of flake was at play — and a fix for a timing flake makes an order-dependence flake worse.
+- **Refused to skip the diagnosis.** "Fix them" became "diagnose, categorize, rank." The original would have started editing tests before anyone knew *which kind* of flake was at play, and a fix for a timing flake can make an order-dependence flake worse.
 - **Pinned the analysis dimensions.** Four well-known flake categories that every test engineer recognizes, rather than "whatever Claude thinks is wrong."
-- **Specified the deliverable shape.** A ranked table with name, category, and confidence — reviewable in 30 seconds, not a wall of prose.
-- **Added the missing guardrail.** "Don't apply fixes yet" — the obvious thing the user would have written if they hadn't been mid-thought.
+- **Specified the deliverable shape.** A ranked table with name, category, and confidence: reviewable in 30 seconds, not a wall of prose.
+- **Added the missing guardrail.** "Don't apply fixes yet," the obvious thing the user would have written if they hadn't been mid-thought.
 
-The same shape shows up wherever the user's real intent is a threat model, a scope, or a
-deliverable format they never wrote down. [A second worked example — "find a security issue in
-the auth code" — is in the examples file](examples/Prompter-Examples.md), with the same
-per-bullet commentary.
-
-prompter also handles the smaller, more common cases — typos, dangling references like "that file," stacked questions, prompts that should *not* be rewritten because they're already clear, and the cases where it correctly holds back to preserve the user's voice. Twenty-one worked examples covering typos, dangling references, stacked questions, hedging preservation, no-rewrite cases, threat-model framing, and pinning open-ended analytical asks into named categories are in [examples/Prompter-Examples.md](examples/Prompter-Examples.md).
+[All 21 worked examples](examples/Prompter-Examples.md) cover typo repair, unclear references,
+stacked questions, threat-model framing for "find a security issue in the auth code", and the
+cases where prompter correctly leaves a prompt alone.
 
 ---
 
-## Scoping a run
+## Turning it on
 
-prompter doesn't take a file or feature argument — there's nothing to scan. It scopes by **how long the rewrite behavior stays active**. On first invocation it asks:
+Type `/prompter` in any session (`/prompter:prompter` if you installed it as a plugin) and pick
+how long it should stay on:
 
-| Mode | Behavior |
+| Mode | What happens |
 |---|---|
-| **Try it once** | Evaluate the next prompt, rewrite if warranted, then stop. Good first run. |
-| **This session** | Rewrite for the rest of this Claude Code conversation. No files modified. |
-| **Add to CLAUDE.md** | Insert a Prompt Rewriting rule into this project's `CLAUDE.md` or your global `~/.claude/CLAUDE.md`, so it persists across sessions. You choose which. |
-| **Remove from CLAUDE.md** | Strip the rule when you no longer want persistent rewriting. Offered only when the rule exists, and names the file it was found in. |
+| **Try it once** | Evaluates your next prompt, rewrites it if that helps, then stops. A good first run. |
+| **This session** | Evaluates every prompt for the rest of this conversation. No files change. |
+| **Add to CLAUDE.md** | Writes a short Prompt Rewriting rule into this project's `CLAUDE.md` or your global `~/.claude/CLAUDE.md`, your choice, so it stays on in future sessions. If a rule is already there, prompter shows you the difference and keeps yours unless you say otherwise. |
+| **Remove from CLAUDE.md** | Takes the rule out again. Offered only when the rule exists, and names the file it's in. |
 
-**Fresh vs prior history.** prompter is stateless by design — every prompt is evaluated from scratch against the rules in SKILL.md. There's no per-user model that "learns your style," no prior-rewrite cache that biases the next call. Re-invocation in the same session detects an active mode: if your message contains prompt text, the skill evaluates it under the active mode; if your message is `/prompter` alone, the mode menu reappears so you can switch settings. The Add-to-CLAUDE.md path never duplicates silently — it diffs against any existing section and asks before overwriting. If you want a different style, edit SKILL.md or override the rule in your project's CLAUDE.md.
+**Try it first.** Choose "Try it once," then send a one-liner like *"the tests are flaky, fix
+them"* and see what prompter makes of it.
 
----
+**When the menu appears.** Only when you type `/prompter` by itself. Type `/prompter` with a
+prompt in the same message and prompter evaluates that prompt. Ask directly ("make this prompt
+clearer: …") and you get the rewrite. With the rule in CLAUDE.md, new sessions start rewriting
+without asking again.
 
-## What it doesn't do
-
-`prompter` is intentionally narrow:
-
-- It does not generate code
-- It does not make architectural decisions
-- It does not pick libraries or frameworks for you
-- It does not edit your prompt history or transcript
-
-It just rewrites the next prompt for clarity, shows you the rewrite, and waits for your approval before the rewritten version goes to Claude.
+It doesn't learn your style: every prompt is judged fresh against the rules in
+[SKILL.md](skills/prompter/SKILL.md). To change how it rewrites, edit that file, or add your own
+lines to the Prompt Rewriting section in your CLAUDE.md.
 
 ---
 
@@ -146,33 +149,71 @@ mkdir -p ~/.claude/skills && cp -r prompter/skills/prompter ~/.claude/skills/
 mkdir -p /path/to/project/.claude/skills && cp -r prompter/skills/prompter /path/to/project/.claude/skills/
 ```
 
----
-
-## Upgrading from v1.2.x
-
-**Coming from v1.3.0?** Nothing was removed in v1.4.0. See [UPGRADING.md](UPGRADING.md) for what changed.
-
-v1.3.0 is a backward-incompatible rewrite. If you installed prompter before May 31, 2026, the
-version on disk won't match this README — no errors, but the behavior won't match what's
-documented here until you upgrade.
-
-**[What changed, and how to upgrade →](UPGRADING.md)**
-
-## History
-
-`prompter` was originally bundled with [tutorial-creator](https://github.com/Terryc21/tutorial-creator) (then named `code-smarter`). It was split into its own repo so the audience that wants prompt rewriting can find it without first finding a tutorial-generation tool. Commit history is preserved.
+**Updating.** For a plugin install, run `claude plugin update prompter@prompter` in a terminal.
+For a manual install, copy the new `skills/prompter/` folder over the old one. Either way, start a
+new session afterward: a running session keeps the version it loaded. Coming from an earlier
+version? [UPGRADING.md](UPGRADING.md) lists what changed.
 
 ---
 
-## Sibling skills
+## Where it stands
 
-- [**bug-echo**](https://github.com/Terryc21/bug-echo) — sibling-bug scan after a fix
-- [**bug-prospector**](https://github.com/Terryc21/bug-prospector) — forward-looking bug hunt before a release
-- [**workflow-audit**](https://github.com/Terryc21/workflow-audit) — 5-layer SwiftUI behavioral flow audit
-- [**unforget**](https://github.com/Terryc21/unforget) — one-file deferred-work ledger
-- [**radar-suite**](https://github.com/Terryc21/radar-suite) — 6-skill suite tracing user behavior paths through the app (iOS + macOS)
-- [**skill-reviewer**](https://github.com/Terryc21/skill-reviewer) — candid reviews of other Claude Code skills
-- [**tutorial-creator**](https://github.com/Terryc21/tutorial-creator) — annotated tutorials from your codebase
+**v1.4.0.** Built and used daily while shipping [Stuffolio](https://stuffolio.app). It started
+inside [tutorial-creator](https://github.com/Terryc21/tutorial-creator) (then called
+`code-smarter`) and moved to its own repository, commit history included, so people looking for
+prompt rewriting could find it.
+
+**Real limits, worth knowing:**
+
+- **It only knows what the conversation shows.** It can name "that file" only if the file came up.
+  Otherwise it asks, which costs you a reply.
+- **Every rewrite costs one reply.** Nothing runs until you approve, correct, or decline. Clear
+  prompts cost nothing, because prompter skips them.
+- **A long session can lose track of the mode.** When Claude Code compacts a long conversation,
+  "Try it once" and "This session" can be forgotten. Run `/prompter` again to restart. The
+  CLAUDE.md rule doesn't have this problem.
+- **The trigger tests haven't been re-run since v1.4.0.** Earlier runs scored 0% on prompts that
+  should have triggered the skill, because the mode menu blocked the test harness. v1.4.0 removes
+  that cause; [tests/README.md](tests/README.md) has the details.
+
+**What would help most:** [open an issue](https://github.com/Terryc21/prompter/issues) with a
+prompt prompter rewrote badly, or one it should have rewritten and didn't.
+
+---
+
+## More Claude Code skills
+
+Other skills from the same author, each in its own repository.
+
+**Working with Claude Code**
+- [unforget](https://github.com/Terryc21/unforget): one ledger per project for deferred work, so
+  nothing you put off gets lost between releases.
+- [inspect-before-install](https://github.com/Terryc21/inspect-before-install): audits a third-party
+  repository before you run its install command.
+- [skill-reviewer](https://github.com/Terryc21/skill-reviewer): candid reviews of Claude Code skills,
+  with file and line citations and ranked actions.
+
+**Finding bugs in Swift and SwiftUI apps**
+- [radar-suite](https://github.com/Terryc21/radar-suite): five audit skills and a capstone grade,
+  run as one pipeline, that find bugs before your users do.
+- [workflow-audit](https://github.com/Terryc21/workflow-audit): traces SwiftUI user flows for dead
+  ends, broken promises and miswired data.
+- [bug-prospector](https://github.com/Terryc21/bug-prospector): looks for the bugs that
+  pattern-based auditors miss, such as broken assumptions, state-machine gaps and boundary conditions.
+- [bug-echo](https://github.com/Terryc21/bug-echo): after you fix a bug, finds and rates other
+  instances of the same defect, and fixes them only with your approval.
+- [one-star-risk](https://github.com/Terryc21/one-star-risk): re-scores audit findings by how likely
+  each one is to earn a one-star App Store review.
+- [sitrep](https://github.com/Terryc21/sitrep): A to F grades for an iOS or Swift codebase across
+  nine categories, reported once for engineers and once for the people who fund them.
+
+**Learning**
+- [tutorial-creator](https://github.com/Terryc21/tutorial-creator): annotated code-reading lessons
+  built from your own codebase, with a quiz and a vocabulary you keep.
+- [lexicon](https://github.com/Terryc21/lexicon): collects unfamiliar terms from what you read and
+  work on into subject glossaries.
+
+---
 
 ## Author
 
@@ -182,7 +223,7 @@ Terry Nyberg, [Coffee & Code LLC](https://stuffolio.app/). If prompter has saved
 
 ## Privacy
 
-prompter collects no data of its own. It has no server, no accounts, no telemetry and no analytics, and it sends nothing to its author. It reads only the prompt you give it. It writes nothing unless you choose "Add to CLAUDE.md", which adds one short rule block to that project's CLAUDE.md. It makes no network requests and runs no scripts. Anything it saves stays on your own machine. What you ask it to read is processed by Claude in your own session, under your own Anthropic terms and settings. Anthropic's plugin directory may show the author aggregate install counts; those come from the directory, not from the plugin.
+prompter collects no data of its own. It has no server, no accounts, no telemetry and no analytics, and it sends nothing to its author. It reads your prompt and the conversation around it, and, when you open its menu, your CLAUDE.md files to see whether its rule is already there. It writes nothing unless you choose "Add to CLAUDE.md" or "Remove from CLAUDE.md", which change one short rule block in the CLAUDE.md you pick: this project's, or your global `~/.claude/CLAUDE.md`. It makes no network requests and runs no scripts. Anything it saves stays on your own machine. What you ask it to read is processed by Claude in your own session, under your own Anthropic terms and settings. Anthropic's plugin directory may show the author aggregate install counts; those come from the directory, not from the plugin.
 
 ## License
 
