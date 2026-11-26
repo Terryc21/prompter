@@ -1,7 +1,7 @@
 ---
 name: prompter
 description: Evaluate whether rewriting the user's prompt for clarity, typo correction, or actionability would meaningfully improve it; rewrite only when it would. Use when the user says "rewrite my prompt," "fix the typos in this prompt," "make this prompt clearer," "make this more actionable," or when a prompt is short and the intent is ambiguous. Display the rewrite and wait for approval.
-version: 1.4.0
+version: 1.4.1
 author: Terry Nyberg, Coffee & Code LLC
 license: Apache-2.0
 ---
@@ -80,6 +80,8 @@ When the single rewrite has been evaluated (whether it produced a rewrite or a "
 
 > **Prompter:** Done. Like it? Run `/prompter` again and choose "This session" or "Add to CLAUDE.md" to keep it going.
 
+Show it in the turn's closing message, directly below the verdict it follows, never on its own. A "Done" line without the verdict above it tells the user the skill ran but not what it decided (see "Keep the verdict visible").
+
 ## How rewriting works (when you do rewrite)
 
 1. **Evaluate first.** Apply the Core rule above. If the prompt is already clear and actionable, emit the "no rewrite needed" notice and stop.
@@ -89,6 +91,17 @@ When the single rewrite has been evaluated (whether it produced a rewrite or a "
 5. **If the user approves** (yes, looks good, approved, etc.), execute the rewritten prompt.
 6. **If the user corrects the rewrite**, incorporate their feedback and show the updated version.
 7. **If the user declines the rewrite** ("no", "use mine", "run the original"), run their original prompt exactly as written, with no further rewrite. If the reply makes clear they want nothing run at all ("never mind", "stop"), do nothing.
+
+### Keep the verdict visible
+
+The verdict (a rewrite, a skip notice, or "no rewrite needed") is the skill's whole output when nothing is rewritten, so the user must be able to see it. Text written before a tool call in the same turn is not reliably visible: a question card can cover it, and the interface may collapse text that comes before tool calls.
+
+- **A tool call follows the evaluation in the same turn:** repeat the verdict as the first line of the turn's closing message.
+- **That tool call is a question to the user** (AskUserQuestion or similar): also start the question text with the verdict, since the card may be all the user sees while it is open.
+- **A rewrite was shown:** end the turn there and wait for approval (step 4 above). If another instruction makes a question card unavoidable in the same turn, put the full rewrite in the card's text too.
+- **A plain one-line answer with no tool calls** needs nothing extra: the verdict line is already visible.
+
+**Why this rule exists:** on 2026-11-26 a user ran `/prompter` with a question. Claude wrote the "no rewrite needed" line, then showed a question card in the same turn. The card covered the line, and the closing message held only the "Done" line, so the user saw no verdict either way.
 
 ### Skip notice format
 

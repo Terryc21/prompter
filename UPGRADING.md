@@ -3,6 +3,14 @@
 *Moved out of the README on 2026-08-28 so the landing page stays a 4-minute read. Nothing was
 cut — this is the full upgrade guide.*
 
+## v1.4.0 to v1.4.1
+
+One fix, nothing removed:
+
+- **You always see the verdict.** When prompter's verdict ("no rewrite needed", a skip notice, or a rewrite) was followed in the same turn by a question card or another tool call, the card could cover it, and the closing message showed only the "Done" line. Now the verdict is repeated as the first line of the closing message, and at the start of any question card's text. "Try it once" shows "Done" directly below the verdict instead of on its own.
+
+To upgrade, follow "How to upgrade" below. For a plugin install, run `claude plugin update prompter@prompter` in a terminal instead.
+
 ## v1.3.0 to v1.4.0
 
 Nothing was removed, and nothing you rely on stops working. The changes:

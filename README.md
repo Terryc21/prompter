@@ -9,7 +9,7 @@ Most of the time it wouldn't, and your prompt runs as written. When a prompt is 
 or missing something obvious, prompter shows you a sharper version and waits. You approve it,
 correct it, or run your original.
 
-*5 min read · [21 worked examples](examples/Prompter-Examples.md) · [what changed in v1.4.0](UPGRADING.md)*
+*5 min read · [21 worked examples](examples/Prompter-Examples.md) · [what changed in v1.4.1](UPGRADING.md)*
 
 ---
 
@@ -158,7 +158,7 @@ version? [UPGRADING.md](UPGRADING.md) lists what changed.
 
 ## Where it stands
 
-**v1.4.0.** Built and used daily while shipping [Stuffolio](https://stuffolio.app). It started
+**v1.4.1.** Built and used daily while shipping [Stuffolio](https://stuffolio.app). It started
 inside [tutorial-creator](https://github.com/Terryc21/tutorial-creator) (then called
 `code-smarter`) and moved to its own repository, commit history included, so people looking for
 prompt rewriting could find it.
